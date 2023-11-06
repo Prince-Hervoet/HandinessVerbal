@@ -1,3 +1,4 @@
+import { Board } from "../board/board.js";
 import { judgeMouseOnWidget } from "../util/calculation.js";
 import { stateControllerNames } from "../util/someConst.js";
 
@@ -34,7 +35,16 @@ export function mouseMoveHandler(event, board) {
  */
 export function mouseDownHandler(event, board) {
   const { clientX, clientY } = event;
-  console.log("按下了");
+  switch (board.boardState) {
+    // 如果是悬停状态，则变成抓取
+    case stateControllerNames.HOVERING:
+      board.boardState = stateControllerNames.CATCHING;
+      break;
+    // 如果是选中状态，则判断之前选中的是不是当前点击的这个
+    case stateControllerNames.HITTING:
+      board.boardState = stateControllerNames.CATCHING;
+      break;
+  }
 }
 
 /**
@@ -42,4 +52,15 @@ export function mouseDownHandler(event, board) {
  * @param {object} event
  * @param {Board} board
  */
-export function mouseUpHandler(event, board) {}
+export function mouseUpHandler(event, board) {
+  switch (board.boardState) {
+    // 如果是拖拽状态，则变成选中
+    case stateControllerNames.DRAGGING:
+      board.boardState = stateControllerNames.HITTING;
+      break;
+    // 如果是抓取状态，则变成选中
+    case stateControllerNames.CATCHING:
+      board.boardState = stateControllerNames.HITTING;
+      break;
+  }
+}
