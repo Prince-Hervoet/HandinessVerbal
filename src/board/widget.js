@@ -1,0 +1,4 @@
+class Widget {
+  shapeData;
+  boundingBox;
+}

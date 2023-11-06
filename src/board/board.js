@@ -1,5 +1,6 @@
 import { LinkedList, LinkedListNode } from "../util/linkedList.js";
-import { createRectangle } from "../widgets/rectangle.js";
+import { Rectangle, createRectangle } from "../shape/rectangle.js";
+import { calBoundingBox } from "../util/calculation.js";
 
 /**
  * 画板类，用于装载canvas
@@ -18,17 +19,30 @@ export class Board {
     this.widgetList = new LinkedList();
   }
 
+  clearWidgets() {
+    this.widgetList.clear();
+    this.clear();
+  }
+
   /**
    * 清空canvas
    */
   clear() {
-    this.widgetList.clear();
     this.canvasContext.clearRect(
       0,
       0,
       this.canvasDom.width,
       this.canvasDom.height
     );
+  }
+
+  render() {
+    if (this.widgetList.size === 0) return;
+    let run = this.widgetList.tail.prev;
+    while (run !== this.widgetList.head) {
+      run.draw(this.canvasContext);
+      run = run.prev;
+    }
   }
 
   /**
@@ -72,14 +86,8 @@ export class BoardController {
   }
 
   createRectangle(x, y, width, height, style) {
-    const widget = createRectangle(x, y, width, height, style);
-  }
-}
-
-class Verbal {
-  boardController;
-
-  constructor(boardController) {
-    this.boardController = boardController;
+    const shapeData = new Rectangle(x, y, width, height, style);
+    const widget = { shapeData, boundingBox: calBoundingBox(shapeData.points) };
+    this._renderBoard.addWidget(widget);
   }
 }
