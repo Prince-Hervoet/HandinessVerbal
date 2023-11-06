@@ -1,4 +1,8 @@
-import { mouseDownHandler, mouseMoveHandler } from "../event/eventHandlers.js";
+import {
+  mouseDownHandler,
+  mouseMoveHandler,
+  mouseUpHandler,
+} from "../event/eventHandlers.js";
 import { Board, BoardController } from "./board.js";
 
 /**
@@ -54,6 +58,10 @@ function bindEventHandler(dom, board) {
   });
 
   dom.addEventListener("mousedown", (event) => {
-    mouseDownHandler(event);
+    mouseDownHandler(event, board);
+  });
+
+  dom.addEventListener("mouseup", (event) => {
+    mouseUpHandler(event, board);
   });
 }

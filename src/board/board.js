@@ -1,22 +1,28 @@
+import { LinkedList, LinkedListNode } from "../util/linkedList.js";
+import { createRectangle } from "../widgets/rectangle.js";
+
 /**
  * 画板类，用于装载canvas
  */
 export class Board {
-  canvasDom; // canvas的dom
+  canvasDom; // canvas的dhom
   canvasContext; // canvas的上下文
-  currentBoardState; // 画板状态
-  currentHittingWidget; // 当前选中的元素
-  currentHoveringWidget; // 当前悬停的元素
+  boardState; // 画板状态
+  hittingWidgetNode; // 当前选中的元素节点
+  hoveringWidgetNode; // 当前悬停的元素节点
+  widgetList; // 绘制链表
 
   constructor(canvasDom, canvasContext) {
     this.canvasDom = canvasDom;
     this.canvasContext = canvasContext;
+    this.widgetList = new LinkedList();
   }
 
   /**
    * 清空canvas
    */
   clear() {
+    this.widgetList.clear();
     this.canvasContext.clearRect(
       0,
       0,
@@ -33,18 +39,40 @@ export class Board {
     if (!widget || !widget.draw) return;
     widget.draw(this.canvasContext);
   }
+
+  /**
+   * 添加widget到绘制链表
+   * @param {object} widget
+   */
+  addWidget(widget) {
+    if (!widget) return;
+    this.widgetList.insertData(widget);
+  }
+
+  /**
+   * 移除绘制链表节点
+   * @param {LinkedListNode} node
+   */
+  removeWidgetNode(node) {
+    if (!node) return;
+    this.widgetList.remove(node);
+  }
 }
 
 /**
  * 画板控制器，用于收集多个画板
  */
 export class BoardController {
-  eventBoard; // 事件画板
-  renderBoard; // 渲染画板
+  _eventBoard; // 事件画板
+  _renderBoard; // 渲染画板
 
   constructor(eventBoard, renderBoard) {
-    this.eventBoard = eventBoard;
-    this.renderBoard = renderBoard;
+    this._eventBoard = eventBoard;
+    this._renderBoard = renderBoard;
+  }
+
+  createRectangle(x, y, width, height, style) {
+    const widget = createRectangle(x, y, width, height, style);
   }
 }
 

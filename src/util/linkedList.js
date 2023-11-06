@@ -1,7 +1,7 @@
 /**
  * 双向链表工具类
  */
-class LinkedList {
+export class LinkedList {
   head;
   tail;
   size;
@@ -50,6 +50,17 @@ class LinkedList {
   }
 
   /**
+   * 清空链表
+   */
+  clear() {
+    this.head.next = this.tail;
+    this.tail.prev = this.head;
+    this.head.prev = null;
+    this.tail.next = null;
+    size = 0;
+  }
+
+  /**
    * 获取长度
    * @returns number
    */
@@ -61,7 +72,7 @@ class LinkedList {
 /**
  * 双向链表节点类
  */
-class LinkedListNode {
+export class LinkedListNode {
   next;
   prev;
   data;

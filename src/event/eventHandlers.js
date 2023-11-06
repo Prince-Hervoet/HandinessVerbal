@@ -28,15 +28,18 @@ export function mouseMoveHandler(event, board) {
 }
 
 /**
- *
+ * 浏览器鼠标按下事件处理器
  * @param {object} event
+ * @param {Board} board
  */
-export function mouseDownHandler(event) {
+export function mouseDownHandler(event, board) {
   const { clientX, clientY } = event;
+  console.log("按下了");
 }
 
 /**
- *
+ * 浏览器鼠标抬起事件处理器
  * @param {object} event
+ * @param {Board} board
  */
-function mouseUpHandler(event) {}
+export function mouseUpHandler(event, board) {}

@@ -1,6 +1,6 @@
 import { setStyle } from "../util/baseDraw.js";
 
-function createRectangle(x, y, width, height, style) {
+export function createRectangle(x, y, width, height, style) {
   const widget = {
     x,
     y,
