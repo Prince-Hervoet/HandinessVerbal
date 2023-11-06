@@ -1,1 +1,1 @@
-function render(boardId) {}
+class Renderer {}
