@@ -1,3 +1,4 @@
+import { judgePositionInWidget } from "../util/calculate.js";
 import { IWidget } from "../util/someTypes.js";
 
 type RenderListNodeType = RenderListNode | null;
@@ -6,7 +7,7 @@ export class Board {
   private canvasDom: HTMLCanvasElement | null = null; // canvas dom
   private canvasCtx: CanvasRenderingContext2D | null = null; // canvas context
   private renderList: RenderLinkedList = new RenderLinkedList(); // render list
-  private idToNode: Map<string, RenderListNode> = new Map(); // widgetId to RenderListNode
+  private widgetToNode: Map<IWidget, RenderListNode> = new Map(); // widget to renderListNode
 
   constructor(canvasDom: HTMLCanvasElement) {
     this.canvasDom = canvasDom;
@@ -19,6 +20,16 @@ export class Board {
    * @param mouseY
    */
   checkPositionOnWidgetNode(mouseX: number, mouseY: number): IWidget | null {
+    const head = this.renderList.getHead();
+    let run = this.renderList.getTail();
+    run = run.prev!;
+    while (run !== head) {
+      if (run.isActive) {
+        const widget: IWidget = run.value as IWidget;
+        if (judgePositionInWidget(mouseX, mouseY, widget)) return widget;
+      }
+      run = run.prev!;
+    }
     return null;
   }
 
@@ -62,7 +73,7 @@ export class Board {
    */
   clearRenderList() {
     this.renderList.clear();
-    this.idToNode.clear();
+    this.widgetToNode.clear();
   }
 
   /**
@@ -73,7 +84,7 @@ export class Board {
     const node = new RenderListNode();
     node.value = widget;
     this.renderList.addLast(node);
-    this.idToNode.set(widget.getWidgetId(), node);
+    this.widgetToNode.set(widget, node);
   }
 
   /**
@@ -82,11 +93,10 @@ export class Board {
    * @returns
    */
   remove(widget: IWidget) {
-    const widgetId: string = widget.getWidgetId();
-    const node = this.idToNode.get(widgetId);
+    const node = this.widgetToNode.get(widget);
     if (!node) return;
     this.renderList.remove(node);
-    this.idToNode.delete(widgetId);
+    this.widgetToNode.delete(widget);
   }
 
   /**
@@ -96,7 +106,7 @@ export class Board {
    * @returns
    */
   setWidgetNodeActive(widget: IWidget, isActive: boolean) {
-    const node = this.idToNode.get(widget.getWidgetId());
+    const node = this.widgetToNode.get(widget);
     if (!node) return;
     node.isActive = isActive;
   }

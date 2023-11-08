@@ -14,14 +14,14 @@ export class BoardController {
     /**
      * 从渲染层上检测坐标是否在某个图形上
      */
-    checkPositionOnWidget(x, y) {
+    checkPositionOnRenderBoard(x, y) {
         return this.renderBoard.checkPositionOnWidgetNode(x, y);
     }
     /**
      * 将部件放置到渲染画布上
      * @param widget
      */
-    place(widget) {
+    placeRenderBoard(widget) {
         if (!widget)
             return;
         this.renderBoard.add(widget);
@@ -31,10 +31,37 @@ export class BoardController {
      * 将部件从渲染画布上移除
      * @param widget
      */
-    remove(widget) {
+    removeFromRenderBoard(widget) {
         if (!widget)
             return;
         this.renderBoard.remove(widget);
+        this.renderBoard.renderAll();
+    }
+    /**
+     * 将部件放置到事件画布上
+     * @param widget
+     */
+    placeEventBoard(widget) {
+        if (!widget)
+            return;
+        this.eventBoard.add(widget);
+        this.eventBoard.renderAll();
+    }
+    /**
+     * 将部件从事件画布上移除
+     * @param widget
+     */
+    removeFromEventBoard(widget) {
+        if (!widget)
+            return;
+        this.eventBoard.remove(widget);
+        this.eventBoard.renderAll();
+    }
+    renderBoardRenderAll() {
+        this.renderBoard.renderAll();
+    }
+    eventBoardRenderAll() {
+        this.eventBoard.renderAll();
     }
     /**
      * 将部件传送至事件层，用于响应事件过程的管理
@@ -64,6 +91,10 @@ export class BoardController {
         this.renderBoard.setWidgetNodeActive(widget, true);
         this.renderBoard.renderAll();
     }
+    /**
+     * 获取容器DOM
+     * @returns
+     */
     getContainerDom() {
         return this.containerDom;
     }

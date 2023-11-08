@@ -22,7 +22,7 @@ export class BoardController {
   /**
    * 从渲染层上检测坐标是否在某个图形上
    */
-  checkPositionOnWidget(x: number, y: number): IWidget | null {
+  checkPositionOnRenderBoard(x: number, y: number): IWidget | null {
     return this.renderBoard!.checkPositionOnWidgetNode(x, y);
   }
 
@@ -30,7 +30,7 @@ export class BoardController {
    * 将部件放置到渲染画布上
    * @param widget
    */
-  place(widget: IWidget) {
+  placeRenderBoard(widget: IWidget) {
     if (!widget) return;
     this.renderBoard!.add(widget);
     this.renderBoard!.renderAll();
@@ -40,9 +40,38 @@ export class BoardController {
    * 将部件从渲染画布上移除
    * @param widget
    */
-  remove(widget: IWidget) {
+  removeFromRenderBoard(widget: IWidget) {
     if (!widget) return;
     this.renderBoard!.remove(widget);
+    this.renderBoard!.renderAll();
+  }
+
+  /**
+   * 将部件放置到事件画布上
+   * @param widget
+   */
+  placeEventBoard(widget: IWidget) {
+    if (!widget) return;
+    this.eventBoard!.add(widget);
+    this.eventBoard!.renderAll();
+  }
+
+  /**
+   * 将部件从事件画布上移除
+   * @param widget
+   */
+  removeFromEventBoard(widget: IWidget) {
+    if (!widget) return;
+    this.eventBoard!.remove(widget);
+    this.eventBoard!.renderAll();
+  }
+
+  renderBoardRenderAll() {
+    this.renderBoard!.renderAll();
+  }
+
+  eventBoardRenderAll() {
+    this.eventBoard!.renderAll();
   }
 
   /**
@@ -75,6 +104,10 @@ export class BoardController {
     this.renderBoard!.renderAll();
   }
 
+  /**
+   * 获取容器DOM
+   * @returns
+   */
   getContainerDom() {
     return this.containerDom;
   }

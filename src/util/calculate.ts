@@ -1,4 +1,3 @@
-import { nanoid } from "../../node_modules/nanoid/index.js";
 import { IWidget, Point } from "./someTypes.js";
 
 /**
@@ -6,7 +5,7 @@ import { IWidget, Point } from "./someTypes.js";
  * @returns
  */
 export function getWidgetId(): string {
-  return Date.now() + "_" + nanoid();
+  return Date.now() + "_" + Math.random();
 }
 
 /**
@@ -38,4 +37,15 @@ export function judgePositionInWidget(
       ++count;
   }
   return (count & 1) === 1;
+}
+
+/**
+ * 设置ctx的风格
+ * @param ctx
+ * @param style
+ */
+export function setCtxStyle(ctx: CanvasRenderingContext2D, style: any) {
+  ctx.fillStyle = style.fillStyle;
+  ctx.strokeStyle = style.strokeStyle;
+  ctx.font = style.font;
 }

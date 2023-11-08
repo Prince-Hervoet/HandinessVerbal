@@ -3,6 +3,13 @@ export class Point {
   public y: number = 0;
 }
 
+export class BoundingBoxPosition {
+  public x: number = 0;
+  public y: number = 0;
+  public width: number = 0;
+  public height: number = 0;
+}
+
 export interface ICanvasProps {
   width: number;
   height: number;
@@ -28,4 +35,6 @@ export interface IWidget {
    * 获取顶点数组
    */
   getPoints(): Point[];
+
+  getBoundingBoxPosition(): BoundingBoxPosition;
 }

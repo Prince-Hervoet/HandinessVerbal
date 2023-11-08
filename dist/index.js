@@ -3,16 +3,16 @@ import { BoardEventController } from "./board/boardEventController.js";
 import { Rect } from "./shape/rect.js";
 class Verbal {
     constructor(containerDom, renderCanvasDom, eventCanvasDom) {
-        this.boardController = null;
-        this.boardEventController = null;
+        this.boardController = null; // 画布控制器
+        this.boardEventController = null; // 画布事件控制器
         this.boardController = new BoardController(containerDom, renderCanvasDom, eventCanvasDom);
         this.boardEventController = new BoardEventController(this.boardController);
     }
     place(widget) {
-        this.boardController.place(widget);
+        this.boardController.placeRenderBoard(widget);
     }
     remove(widget) {
-        this.boardController.remove(widget);
+        this.boardController.removeFromRenderBoard(widget);
     }
     rect(props) {
         return new Rect(props);

@@ -4,8 +4,8 @@ import { Rect } from "./shape/rect.js";
 import { ICanvasProps, IWidget } from "./util/someTypes.js";
 
 class Verbal {
-  private boardController: BoardController | null = null;
-  private boardEventController: BoardEventController | null = null;
+  private boardController: BoardController | null = null; // 画布控制器
+  private boardEventController: BoardEventController | null = null; // 画布事件控制器
 
   constructor(
     containerDom: HTMLDivElement,
@@ -21,11 +21,11 @@ class Verbal {
   }
 
   place(widget: IWidget) {
-    this.boardController!.place(widget);
+    this.boardController!.placeRenderBoard(widget);
   }
 
   remove(widget: IWidget) {
-    this.boardController!.remove(widget);
+    this.boardController!.removeFromRenderBoard(widget);
   }
 
   rect(props: any): IWidget {
