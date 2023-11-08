@@ -1,19 +1,44 @@
-import { BoundingBoxPosition, IWidget, Point } from "../util/someTypes";
+import { setCtxStyle } from "../util/calculate.js";
+import { BoundingBoxPosition, IWidget, Point } from "../util/someTypes.js";
+import { BaseWidget } from "./baseWidget.js";
 
-class RectFrame implements IWidget {
+export class RectFrame extends BaseWidget {
+  constructor(props: any) {
+    super();
+    this.x = props.x;
+    this.y = props.y;
+    this.width = props.width;
+    this.height = props.height;
+    this.style = props.style;
+    this.calPoints();
+  }
+
+  private calPoints() {
+    this.points.push({ x: this.x, y: this.y });
+    this.points.push({ x: this.x + this.width, y: this.y });
+    this.points.push({ x: this.x + this.width, y: this.y + this.height });
+    this.points.push({ x: this.x, y: this.y + this.height });
+  }
+
   render(ctx: CanvasRenderingContext2D): void {
-    throw new Error("Method not implemented.");
+    setCtxStyle(ctx, this.style);
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
   }
+
   update(props: any): void {
-    throw new Error("Method not implemented.");
+    this.x = props.x;
+    this.y = props.y;
+    this.width = props.width;
+    this.height = props.height;
+    this.style = props.style;
+    this.calPoints();
   }
-  getWidgetId(): string {
-    throw new Error("Method not implemented.");
-  }
+
   getPoints(): Point[] {
-    throw new Error("Method not implemented.");
+    return this.points;
   }
+
   getBoundingBoxPosition(): BoundingBoxPosition {
-    throw new Error("Method not implemented.");
+    return { x: this.x, y: this.y, width: this.width, height: this.height };
   }
 }

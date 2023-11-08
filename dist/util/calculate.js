@@ -37,6 +37,9 @@ export function setCtxStyle(ctx, style) {
     ctx.fillStyle = style.fillStyle;
     ctx.strokeStyle = style.strokeStyle;
     ctx.font = style.font;
+    ctx.lineWidth = style.lineWidth;
+    ctx.shadowBlur = style.shadowBlur;
+    ctx.shadowColor = style.shadowColor;
 }
 /**
  * 将当前鼠标坐标和最后一次鼠标按下的坐标转化成canvas画矩形的左上角的坐标
@@ -51,4 +54,19 @@ export function boxSelectRectPositionCal(mouseX, mouseY, mouseDownX, mouseDownY)
     const mx = Math.max(mouseX, mouseDownX);
     const my = Math.max(mouseY, mouseDownY);
     return { x, y, width: mx - x, height: my - y };
+}
+/**
+ * 判断两个矩形是否重叠
+ * @param pos1
+ * @param pos2
+ * @returns
+ */
+export function judgeRectOverlap(pos1, pos2) {
+    if (pos1.x + pos1.width > pos2.x &&
+        pos2.x + pos2.width > pos1.x &&
+        pos1.y + pos1.height > pos2.y &&
+        pos2.y + pos2.height > pos1.y) {
+        return true;
+    }
+    return false;
 }

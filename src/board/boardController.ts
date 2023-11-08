@@ -80,6 +80,16 @@ export class BoardController {
     this.eventBoard!.renderAll();
   }
 
+  clearRenderBoard() {
+    this.renderBoard!.clearRenderList();
+    this.renderBoard!.renderAll();
+  }
+
+  clearEventBoard() {
+    this.eventBoard!.clearRenderList();
+    this.eventBoard!.renderAll();
+  }
+
   /**
    * 将部件传送至事件层，用于响应事件过程的管理
    * @param widget

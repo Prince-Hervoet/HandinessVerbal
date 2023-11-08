@@ -1,13 +1,8 @@
-import { getWidgetId, setCtxStyle } from "../util/calculate.js";
-export class Rect {
+import { setCtxStyle } from "../util/calculate.js";
+import { BaseWidget } from "./baseWidget.js";
+export class Rect extends BaseWidget {
     constructor(props) {
-        this.widgetId = "";
-        this.x = 0;
-        this.y = 0;
-        this.width = 0;
-        this.height = 0;
-        this.points = [];
-        this.widgetId = getWidgetId();
+        super();
         this.x = props.x;
         this.y = props.y;
         this.width = props.width;
@@ -22,7 +17,6 @@ export class Rect {
         this.points.push({ x: this.x, y: this.y + this.height });
     }
     render(ctx) {
-        // 设置风格
         setCtxStyle(ctx, this.style);
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
@@ -33,9 +27,6 @@ export class Rect {
         this.height = props.height;
         this.style = props.style;
         this.calPoints();
-    }
-    getWidgetId() {
-        return this.widgetId;
     }
     getPoints() {
         return this.points;

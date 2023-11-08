@@ -1,4 +1,4 @@
-import { IWidget, Point } from "./someTypes.js";
+import { BaseBoxPosition, IWidget, Point } from "./someTypes.js";
 
 /**
  * 获取一个部件随机id
@@ -48,6 +48,9 @@ export function setCtxStyle(ctx: CanvasRenderingContext2D, style: any) {
   ctx.fillStyle = style.fillStyle;
   ctx.strokeStyle = style.strokeStyle;
   ctx.font = style.font;
+  ctx.lineWidth = style.lineWidth;
+  ctx.shadowBlur = style.shadowBlur;
+  ctx.shadowColor = style.shadowColor;
 }
 
 /**
@@ -68,4 +71,25 @@ export function boxSelectRectPositionCal(
   const mx = Math.max(mouseX, mouseDownX);
   const my = Math.max(mouseY, mouseDownY);
   return { x, y, width: mx - x, height: my - y };
+}
+
+/**
+ * 判断两个矩形是否重叠
+ * @param pos1
+ * @param pos2
+ * @returns
+ */
+export function judgeRectOverlap(
+  pos1: BaseBoxPosition,
+  pos2: BaseBoxPosition
+): boolean {
+  if (
+    pos1.x + pos1.width > pos2.x &&
+    pos2.x + pos2.width > pos1.x &&
+    pos1.y + pos1.height > pos2.y &&
+    pos2.y + pos2.height > pos1.y
+  ) {
+    return true;
+  }
+  return false;
 }

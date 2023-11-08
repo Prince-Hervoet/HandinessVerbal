@@ -34,15 +34,13 @@ export interface IWidget {
   update(props: any): void;
 
   /**
-   * 获取部件ID
-   */
-  getWidgetId(): string;
-
-  /**
    * 获取顶点数组
    */
   getPoints(): Point[];
 
+  /**
+   * 获取包围盒位置信息
+   */
   getBoundingBoxPosition(): BoundingBoxPosition;
 }
 

@@ -1,4 +1,5 @@
 import { Rect } from "../shape/rect.js";
+import { RectFrame } from "../shape/rectFrame.js";
 import {
   boxSelectRectPositionCal,
   judgePositionInWidget,
@@ -7,6 +8,12 @@ import { IWidget } from "../util/someTypes.js";
 import { BoardController } from "./boardController.js";
 
 const hoveringFlagRectStyle = { fillStyle: "rgba(0, 0, 255, 0.3)" };
+const hittingFlagStyle = {
+  strokeStyle: "blue",
+  lineWidth: 3,
+  shadowBlur: 6,
+  shadowColor: "blue",
+};
 const boxSelectFlagRectStyle = { fillStyle: "rgba(0, 0, 245, 0.2)" };
 
 /**
@@ -36,11 +43,12 @@ export class BoardEventController {
   public hittingWidget: IWidget | null = null; // 当前选中的部件 -- 可能多个
   public hoveringWidget: IWidget | null = null; // 当前悬停的部件 -- 只有一个
   public catchingWidget: IWidget | null = null; // 当前抓取的部件 -- 可能多个
-  public draggingWidgets: IWidget | null = null; // 当前拖拽的部件 -- 可能多个
+  public draggingWidget: IWidget | null = null; // 当前拖拽的部件 -- 可能多个
   //！ =========================================================================
 
   // =========================================================================
   static hoveringFlagRect: IWidget = new Rect({}); // 悬停标识
+  static hittingFlagRectFrame: IWidget = new RectFrame({}); // 选中标识
   static boxSelectFlagRect: IWidget = new Rect({}); // 框选标识
   //! =========================================================================
 
@@ -196,9 +204,23 @@ function mouseDownHoveringHandler(
   boardEventController: BoardEventController
 ) {
   // 将当前悬停的部件变成抓取
+  const boardController = boardEventController.boardController!;
   boardEventController.catchingWidget = boardEventController.hoveringWidget;
   boardEventController.hoveringWidget = null;
-  boardEventController.eventState = EventStateEnum.CATCHING;
+  boardEventController.eventState = EventStateEnum.CATCHING; // 控制器状态变成抓取
+  // 去掉悬停标识，画出选中标识
+  boardController.removeFromEventBoard(BoardEventController.hoveringFlagRect);
+  const { x, y, width, height } =
+    boardEventController.catchingWidget!.getBoundingBoxPosition();
+  const hittingFlagRectFrame = BoardEventController.hittingFlagRectFrame;
+  hittingFlagRectFrame.update({
+    x,
+    y,
+    width,
+    height,
+    style: hittingFlagStyle,
+  });
+  boardController.placeEventBoard(BoardEventController.hittingFlagRectFrame);
 }
 
 function mouseDownHittingHandler(
@@ -226,6 +248,7 @@ function mouseDownHittingHandler(
     } else {
       // 如果没有按到任何部件，则变成框选
       boardEventController.hittingWidget = null;
+      boardEventController.mouseDownPosition = [clientX, clientY];
       boardEventController.eventState = EventStateEnum.BOXSELECT;
     }
   }
@@ -239,6 +262,12 @@ function mouseUpHandler(
   boardEventController: BoardEventController
 ) {
   switch (boardEventController.eventState) {
+    case EventStateEnum.COMMON:
+      mouseUpCommonHandler(event, boardEventController);
+      break;
+    case EventStateEnum.HITTING:
+      mouseUpHittingHandler(event, boardEventController);
+      break;
     case EventStateEnum.CATCHING:
       mouseUpCatchingHandler(event, boardEventController);
       break;
@@ -247,6 +276,25 @@ function mouseUpHandler(
       break;
   }
 }
+
+function mouseUpCommonHandler(
+  event: MouseEvent,
+  boardEventController: BoardEventController
+) {
+  // 将所有状态清除
+  const boardController = boardEventController.boardController!;
+  boardEventController.eventState = EventStateEnum.COMMON;
+  boardEventController.catchingWidget = null;
+  boardEventController.hoveringWidget = null;
+  boardEventController.hittingWidget = null;
+  boardEventController.draggingWidget = null;
+  boardController.clearEventBoard();
+}
+
+function mouseUpHittingHandler(
+  event: MouseEvent,
+  boardEventController: BoardEventController
+) {}
 
 function mouseUpCatchingHandler(
   event: MouseEvent,
@@ -265,8 +313,9 @@ function mouseUpBoxSelectHandler(
   // 在框选状态下，鼠标放起将结束这个框选状态，清除框选框
   // todo：多选
   const boardController = boardEventController.boardController!;
-  boardController.removeFromEventBoard(BoardEventController.boxSelectFlagRect);
   boardEventController.mouseDownPosition = null;
   boardEventController.eventState = EventStateEnum.COMMON;
+  // boardController.removeFromEventBoard(BoardEventController.boxSelectFlagRect);
+  boardController.clearEventBoard();
 }
 //! =============================================================================

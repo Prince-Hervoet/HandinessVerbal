@@ -1,4 +1,4 @@
-import { judgePositionInWidget } from "../util/calculate.js";
+import { judgePositionInWidget, judgeRectOverlap } from "../util/calculate.js";
 export class Board {
     constructor(canvasDom) {
         this.canvasDom = null; // canvas dom
@@ -28,6 +28,26 @@ export class Board {
         return null;
     }
     /**
+     * 判断指定矩形是否与某个部件的包围盒重叠
+     * @param rectPos
+     * @returns
+     */
+    checkRectOverlapWidgetNode(rectPos) {
+        const head = this.renderList.getHead();
+        const ans = [];
+        let run = this.renderList.getTail();
+        run = run.prev;
+        while (run !== head) {
+            if (run.isActive) {
+                const widget = run.value;
+                if (judgeRectOverlap(rectPos, widget.getBoundingBoxPosition()))
+                    ans.push(widget);
+            }
+            run = run.prev;
+        }
+        return ans;
+    }
+    /**
      * 将渲染列表全部渲染出来
      */
     renderAll() {
@@ -38,7 +58,9 @@ export class Board {
         while (run !== head) {
             if (run.isActive) {
                 const widget = run.value;
+                this.canvasCtx.save();
                 widget.render(this.canvasCtx);
+                this.canvasCtx.restore();
             }
             run = run.prev;
         }
@@ -60,6 +82,7 @@ export class Board {
     clearRenderList() {
         this.renderList.clear();
         this.widgetToNode.clear();
+        this.renderAll();
     }
     /**
      * 添加部件到渲染列表中

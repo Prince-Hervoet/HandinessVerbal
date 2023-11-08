@@ -1,17 +1,10 @@
 import { getWidgetId, setCtxStyle } from "../util/calculate.js";
 import { BoundingBoxPosition, IWidget, Point } from "../util/someTypes.js";
+import { BaseWidget } from "./baseWidget.js";
 
-export class Rect implements IWidget {
-  private widgetId: string = "";
-  private x: number = 0;
-  private y: number = 0;
-  private width: number = 0;
-  private height: number = 0;
-  private style: any;
-  private points: Point[] = [];
-
+export class Rect extends BaseWidget {
   constructor(props: any) {
-    this.widgetId = getWidgetId();
+    super();
     this.x = props.x;
     this.y = props.y;
     this.width = props.width;
@@ -28,7 +21,6 @@ export class Rect implements IWidget {
   }
 
   render(ctx: CanvasRenderingContext2D): void {
-    // 设置风格
     setCtxStyle(ctx, this.style);
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
@@ -40,10 +32,6 @@ export class Rect implements IWidget {
     this.height = props.height;
     this.style = props.style;
     this.calPoints();
-  }
-
-  getWidgetId(): string {
-    return this.widgetId;
   }
 
   getPoints(): Point[] {
