@@ -38,3 +38,17 @@ export function setCtxStyle(ctx, style) {
     ctx.strokeStyle = style.strokeStyle;
     ctx.font = style.font;
 }
+/**
+ * 将当前鼠标坐标和最后一次鼠标按下的坐标转化成canvas画矩形的左上角的坐标
+ * @param mouseX
+ * @param mouseY
+ * @param mouseDownX
+ * @param mouseDownY
+ */
+export function boxSelectRectPositionCal(mouseX, mouseY, mouseDownX, mouseDownY) {
+    const x = Math.min(mouseX, mouseDownX);
+    const y = Math.min(mouseY, mouseDownY);
+    const mx = Math.max(mouseX, mouseDownX);
+    const my = Math.max(mouseY, mouseDownY);
+    return { x, y, width: mx - x, height: my - y };
+}

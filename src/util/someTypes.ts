@@ -3,6 +3,13 @@ export class Point {
   public y: number = 0;
 }
 
+export class BaseBoxPosition {
+  public x: number = 0;
+  public y: number = 0;
+  public width: number = 0;
+  public height: number = 0;
+}
+
 export class BoundingBoxPosition {
   public x: number = 0;
   public y: number = 0;
@@ -38,3 +45,8 @@ export interface IWidget {
 
   getBoundingBoxPosition(): BoundingBoxPosition;
 }
+
+export const EventWidgetStyle = {
+  hoveringFlagRectStyle: { fillStyle: "rgba(0, 0, 255, 0.3)" },
+  boxSelectFlagRectStyle: { fillStyle: "rgba(0, 0, 245, 0.2)" },
+};

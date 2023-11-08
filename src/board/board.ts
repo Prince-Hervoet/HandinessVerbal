@@ -81,7 +81,9 @@ export class Board {
    * @param widget
    */
   add(widget: IWidget) {
-    const node = new RenderListNode();
+    let node = this.widgetToNode.get(widget);
+    if (node) return;
+    node = new RenderListNode();
     node.value = widget;
     this.renderList.addLast(node);
     this.widgetToNode.set(widget, node);

@@ -57,9 +57,15 @@ export class BoardController {
         this.eventBoard.remove(widget);
         this.eventBoard.renderAll();
     }
+    /**
+     * 渲染层画布渲染
+     */
     renderBoardRenderAll() {
         this.renderBoard.renderAll();
     }
+    /**
+     * 事件层画布渲染
+     */
     eventBoardRenderAll() {
         this.eventBoard.renderAll();
     }
