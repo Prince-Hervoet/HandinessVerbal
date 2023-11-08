@@ -1,16 +1,18 @@
 export class Board {
-    constructor() {
+    constructor(canvasDom) {
         this.canvasDom = null; // canvas dom
         this.canvasCtx = null; // canvas context
-        this.renderList = null; // render list
+        this.renderList = new RenderLinkedList(); // render list
         this.idToNode = new Map(); // widgetId to RenderListNode
+        this.canvasDom = canvasDom;
+        this.canvasCtx = canvasDom.getContext("2d");
     }
     /**
      * 检测鼠标坐标是否在图形上
      * @param mouseX
      * @param mouseY
      */
-    checkMousePositionOnNode(mouseX, mouseY) {
+    checkPositionOnWidgetNode(mouseX, mouseY) {
         return null;
     }
     /**
@@ -70,6 +72,18 @@ export class Board {
         this.renderList.remove(node);
         this.idToNode.delete(widgetId);
     }
+    /**
+     * 设置渲染节点的激活状态
+     * @param widget
+     * @param isActive
+     * @returns
+     */
+    setWidgetNodeActive(widget, isActive) {
+        const node = this.idToNode.get(widget.getWidgetId());
+        if (!node)
+            return;
+        node.isActive = isActive;
+    }
     widgetSize() {
         return this.renderList.getLength();
     }
@@ -82,7 +96,7 @@ class RenderListNode {
         this.next = null;
         this.prev = null;
         this.value = null;
-        this.isActive = true;
+        this.isActive = true; // 当设置为false时，widget将不会渲染
     }
 }
 /**

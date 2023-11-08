@@ -5,15 +5,20 @@ type RenderListNodeType = RenderListNode | null;
 export class Board {
   private canvasDom: HTMLCanvasElement | null = null; // canvas dom
   private canvasCtx: CanvasRenderingContext2D | null = null; // canvas context
-  private renderList: RenderLinkedList | null = null; // render list
+  private renderList: RenderLinkedList = new RenderLinkedList(); // render list
   private idToNode: Map<string, RenderListNode> = new Map(); // widgetId to RenderListNode
+
+  constructor(canvasDom: HTMLCanvasElement) {
+    this.canvasDom = canvasDom;
+    this.canvasCtx = canvasDom.getContext("2d");
+  }
 
   /**
    * 检测鼠标坐标是否在图形上
    * @param mouseX
    * @param mouseY
    */
-  checkMousePositionOnNode(mouseX: number, mouseY: number): IWidget | null {
+  checkPositionOnWidgetNode(mouseX: number, mouseY: number): IWidget | null {
     return null;
   }
 
@@ -22,8 +27,8 @@ export class Board {
    */
   renderAll() {
     this.eraseAll();
-    const head = this.renderList!.getHead();
-    let run = this.renderList!.getTail();
+    const head = this.renderList.getHead();
+    let run = this.renderList.getTail();
     run = run.prev!;
     while (run !== head) {
       if (run.isActive) {
@@ -56,7 +61,7 @@ export class Board {
    * 清空渲染列表
    */
   clearRenderList() {
-    this.renderList!.clear();
+    this.renderList.clear();
     this.idToNode.clear();
   }
 
@@ -67,7 +72,7 @@ export class Board {
   add(widget: IWidget) {
     const node = new RenderListNode();
     node.value = widget;
-    this.renderList!.addLast(node);
+    this.renderList.addLast(node);
     this.idToNode.set(widget.getWidgetId(), node);
   }
 
@@ -80,12 +85,24 @@ export class Board {
     const widgetId: string = widget.getWidgetId();
     const node = this.idToNode.get(widgetId);
     if (!node) return;
-    this.renderList!.remove(node);
+    this.renderList.remove(node);
     this.idToNode.delete(widgetId);
   }
 
+  /**
+   * 设置渲染节点的激活状态
+   * @param widget
+   * @param isActive
+   * @returns
+   */
+  setWidgetNodeActive(widget: IWidget, isActive: boolean) {
+    const node = this.idToNode.get(widget.getWidgetId());
+    if (!node) return;
+    node.isActive = isActive;
+  }
+
   widgetSize() {
-    return this.renderList!.getLength();
+    return this.renderList.getLength();
   }
 }
 
@@ -96,7 +113,7 @@ class RenderListNode {
   public next: RenderListNodeType = null;
   public prev: RenderListNodeType = null;
   public value: IWidget | null = null;
-  public isActive: boolean = true;
+  public isActive: boolean = true; // 当设置为false时，widget将不会渲染
 }
 
 /**

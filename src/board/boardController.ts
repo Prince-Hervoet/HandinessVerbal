@@ -9,9 +9,21 @@ export class BoardController {
   private renderBoard: Board | null = null; // 渲染层
   private eventBoard: Board | null = null; // 事件层
 
-  constructor(containerDom: HTMLDivElement, renderBoard: Board) {
+  constructor(
+    containerDom: HTMLDivElement,
+    renderCanvasDom: HTMLCanvasElement,
+    eventCanvasDom: HTMLCanvasElement
+  ) {
     this.containerDom = containerDom;
-    this.renderBoard = renderBoard;
+    this.renderBoard = new Board(renderCanvasDom);
+    this.eventBoard = new Board(eventCanvasDom);
+  }
+
+  /**
+   * 从渲染层上检测坐标是否在某个图形上
+   */
+  checkPositionOnWidget(x: number, y: number): IWidget | null {
+    return this.renderBoard!.checkPositionOnWidgetNode(x, y);
   }
 
   /**
@@ -34,18 +46,36 @@ export class BoardController {
   }
 
   /**
-   * 开启事件处理
+   * 将部件传送至事件层，用于响应事件过程的管理
+   * @param widget
    */
-  openEventMode() {
-    this.eventBoard = new Board();
-    BoardController.bindEventHandlers(this);
+  transferToEventBoard(widget: IWidget) {
+    if (!this.eventBoard) return;
+    // 先将这个部件从渲染层隐藏掉
+    this.renderBoard!.setWidgetNodeActive(widget, false);
+    this.renderBoard!.renderAll();
+
+    // 将这个部件放到事件层上
+    this.eventBoard.add(widget);
+    this.eventBoard.renderAll();
   }
 
   /**
-   * 绑定事件
-   * @param boardController
+   * 将部件从渲染层传送回事件层
+   * @param widget
    */
-  private static bindEventHandlers(boardController: BoardController) {
-    const dom = boardController.containerDom!;
+  transferToRenderBoard(widget: IWidget) {
+    if (!this.eventBoard) return;
+    // 将这个部件从事件层上清除
+    this.eventBoard.remove(widget);
+    this.eventBoard.renderAll();
+
+    // 将这个部件从渲染层上恢复
+    this.renderBoard!.setWidgetNodeActive(widget, true);
+    this.renderBoard!.renderAll();
+  }
+
+  getContainerDom() {
+    return this.containerDom;
   }
 }
