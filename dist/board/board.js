@@ -1,4 +1,4 @@
-export class RenderBoard {
+export class Board {
     constructor() {
         this.canvasDom = null; // canvas dom
         this.canvasCtx = null; // canvas context

@@ -9,4 +9,7 @@ class Rect {
     getWidgetId() {
         return this.widgetId;
     }
+    getPoints() {
+        return [];
+    }
 }

@@ -1,5 +1,5 @@
 import { getWidgetId } from "../util/calculate.js";
-import { IWidget } from "../util/someTypes.js";
+import { IWidget, Point } from "../util/someTypes.js";
 
 class Rect implements IWidget {
   private widgetId: string = "";
@@ -14,5 +14,9 @@ class Rect implements IWidget {
 
   getWidgetId(): string {
     return this.widgetId;
+  }
+
+  getPoints(): Point[] {
+    return [];
   }
 }

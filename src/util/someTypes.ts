@@ -1,3 +1,8 @@
+export class Point {
+  public x: number = 0;
+  public y: number = 0;
+}
+
 export interface ICanvasProps {
   width: number;
   height: number;
@@ -18,4 +23,9 @@ export interface IWidget {
    * 获取部件ID
    */
   getWidgetId(): string;
+
+  /**
+   * 获取顶点数组
+   */
+  getPoints(): Point[];
 }

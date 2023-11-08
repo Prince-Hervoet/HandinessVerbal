@@ -2,7 +2,7 @@ import { IWidget } from "../util/someTypes.js";
 
 type RenderListNodeType = RenderListNode | null;
 
-export class RenderBoard {
+export class Board {
   private canvasDom: HTMLCanvasElement | null = null; // canvas dom
   private canvasCtx: CanvasRenderingContext2D | null = null; // canvas context
   private renderList: RenderLinkedList | null = null; // render list
@@ -13,10 +13,7 @@ export class RenderBoard {
    * @param mouseX
    * @param mouseY
    */
-  checkMousePositionOnNode(
-    mouseX: number,
-    mouseY: number
-  ): RenderListNode | null {
+  checkMousePositionOnNode(mouseX: number, mouseY: number): IWidget | null {
     return null;
   }
 
