@@ -1,4 +1,4 @@
-import { IWidget } from "../util/someTypes.js";
+import { BaseBoxPosition, IWidget } from "../util/someTypes.js";
 import { Board } from "./board.js";
 
 /**
@@ -24,6 +24,10 @@ export class BoardController {
    */
   checkPositionOnRenderBoard(x: number, y: number): IWidget | null {
     return this.renderBoard!.checkPositionOnWidgetNode(x, y);
+  }
+
+  checkRectOverlapOnRenderBoard(rectPos: BaseBoxPosition): IWidget[] {
+    return this.renderBoard!.checkRectOverlapWidgetNode(rectPos);
   }
 
   /**

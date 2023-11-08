@@ -17,6 +17,9 @@ export class BoardController {
     checkPositionOnRenderBoard(x, y) {
         return this.renderBoard.checkPositionOnWidgetNode(x, y);
     }
+    checkRectOverlapOnRenderBoard(rectPos) {
+        return this.renderBoard.checkRectOverlapWidgetNode(rectPos);
+    }
     /**
      * 将部件放置到渲染画布上
      * @param widget

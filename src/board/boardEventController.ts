@@ -36,7 +36,8 @@ export class BoardEventController {
   public eventState: number = EventStateEnum.COMMON; // 当前控制器的事件状态
 
   // =========================================================================
-  public mouseDownPosition: number[] | null = null; // 鼠标最后一次按下的坐标 [x, y]
+  public mouseDownPosition: number[] = [0, 0]; // 鼠标最后一次按下的坐标 [x, y]
+  public mouseDownOffset: number[] = [0, 0]; // 鼠标在部件上按下的位置到部件左上角的偏移量 [x, y]
   //! =========================================================================
 
   // =========================================================================
@@ -161,6 +162,15 @@ function mouseMoveBoxSelectHandler(
     style: boxSelectFlagRectStyle,
   });
   boardController.placeEventBoard(BoardEventController.boxSelectFlagRect);
+}
+
+function mouseMoveDraggingHandler(
+  event: MouseEvent,
+  boardEventController: BoardEventController
+) {
+  // 拖拽，当鼠标移动时，保持部件和鼠标的偏移量不变
+  const { clientX, clientY } = event;
+  const boardController = boardEventController.boardController!;
 }
 
 //! =============================================================================
@@ -312,10 +322,19 @@ function mouseUpBoxSelectHandler(
 ) {
   // 在框选状态下，鼠标放起将结束这个框选状态，清除框选框
   // todo：多选
+  const { clientX, clientY } = event;
   const boardController = boardEventController.boardController!;
-  boardEventController.mouseDownPosition = null;
   boardEventController.eventState = EventStateEnum.COMMON;
-  // boardController.removeFromEventBoard(BoardEventController.boxSelectFlagRect);
+  const widgets = boardController.checkRectOverlapOnRenderBoard(
+    boxSelectRectPositionCal(
+      clientX,
+      clientY,
+      boardEventController.mouseDownPosition[0],
+      boardEventController.mouseDownPosition[1]
+    )
+  );
+  boardEventController.mouseDownPosition = [];
+  console.log(widgets);
   boardController.clearEventBoard();
 }
 //! =============================================================================

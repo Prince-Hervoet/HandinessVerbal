@@ -21,11 +21,12 @@ export class Rect extends BaseWidget {
         ctx.fillRect(this.x, this.y, this.width, this.height);
     }
     update(props) {
-        this.x = props.x;
-        this.y = props.y;
-        this.width = props.width;
-        this.height = props.height;
-        this.style = props.style;
+        var _a, _b, _c, _d, _e;
+        this.x = (_a = props.x) !== null && _a !== void 0 ? _a : this.x;
+        this.y = (_b = props.y) !== null && _b !== void 0 ? _b : this.y;
+        this.width = (_c = props.width) !== null && _c !== void 0 ? _c : this.width;
+        this.height = (_d = props.height) !== null && _d !== void 0 ? _d : this.height;
+        this.style = (_e = props.style) !== null && _e !== void 0 ? _e : this.style;
         this.calPoints();
     }
     getPoints() {
