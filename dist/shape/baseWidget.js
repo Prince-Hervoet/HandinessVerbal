@@ -5,6 +5,7 @@ export class BaseWidget {
         this.y = 0; // top
         this.width = 0; // 宽 （矩形）
         this.height = 0; // 高 （矩形）
+        this.rotateAngle = 0; // 旋转角度
         this.points = []; // 顶点信息 （闭合图形）
     }
     render(ctx) {

@@ -1,15 +1,21 @@
+import { ControlBox } from "../shape/controlBox.js";
 import { Rect } from "../shape/rect.js";
-import { RectFrame } from "../shape/rectFrame.js";
 import { WidgetGroup } from "../shape/widgetGroup.js";
 import { boxSelectHittingFlagPosCal as boxSelectHittingPositionCal, boxSelectRectPositionCal, judgePositionInWidget, } from "../util/calculate.js";
 const hoveringFlagRectStyle = { fillStyle: "rgba(0, 0, 255, 0.3)" };
 const hittingFlagStyle = {
     strokeStyle: "blue",
     lineWidth: 1,
-    shadowBlur: 6,
+    shadowBlur: 4,
     shadowColor: "blue",
 };
 const boxSelectFlagRectStyle = { fillStyle: "rgba(0, 0, 245, 0.2)" };
+const controlBoxStyle = {
+    strokeStyle: "blue",
+    lineWidth: 1,
+    shadowBlur: 4,
+    shadowColor: "blue",
+};
 /**
  * 事件类型
  */
@@ -69,10 +75,12 @@ export class BoardEventController {
 //！ =========================================================================
 // =========================================================================
 BoardEventController.hoveringFlag = new Rect({ style: hoveringFlagRectStyle }); // 悬停标识
-BoardEventController.hittingFlag = new RectFrame({
+BoardEventController.hittingFlag = new ControlBox({
     style: hittingFlagStyle,
 }); // 选中标识
-BoardEventController.boxSelectFlagRect = new Rect({}); // 框选标识
+BoardEventController.boxSelectFlagRect = new Rect({
+    style: boxSelectFlagRectStyle,
+}); // 框选标识
 // mouseMove
 // =============================================================================
 /**
@@ -135,7 +143,7 @@ function mouseMoveHoveringHandler(event, boardEventController) {
     }
 }
 function mouseMoveHittingHandler(event, boardEventController) {
-    // 选中状态下鼠标移动，继续检测是否需要悬停
+    // 选中状态下鼠标移动，检测是否在控制小方块上
     const { clientX, clientY } = event;
 }
 function mouseMoveCatchingHandler(event, boardEventController) {
@@ -165,13 +173,7 @@ function mouseMoveBoxSelectHandler(event, boardEventController) {
     const mouseDownPos = boardEventController.mouseDownPosition;
     const { x, y, width, height } = boxSelectRectPositionCal(clientX, clientY, mouseDownPos[0], mouseDownPos[1]);
     // 画出框选矩形
-    BoardEventController.boxSelectFlagRect.update({
-        x,
-        y,
-        width,
-        height,
-        style: boxSelectFlagRectStyle,
-    });
+    BoardEventController.boxSelectFlagRect.update({ x, y, width, height });
     boardController.placeEventBoard(BoardEventController.boxSelectFlagRect);
 }
 function mouseMoveDraggingHandler(event, boardEventController) {

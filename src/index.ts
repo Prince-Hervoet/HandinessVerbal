@@ -1,5 +1,6 @@
 import { BoardController } from "./board/boardController.js";
 import { BoardEventController } from "./board/boardEventController.js";
+import { ControlBox } from "./shape/controlBox.js";
 import { Rect } from "./shape/rect.js";
 import { ICanvasProps, IWidget } from "./util/someTypes.js";
 
@@ -30,6 +31,10 @@ class Verbal {
 
   rect(props: any): IWidget {
     return new Rect(props);
+  }
+
+  controlBox(props: any): IWidget {
+    return new ControlBox(props);
   }
 }
 

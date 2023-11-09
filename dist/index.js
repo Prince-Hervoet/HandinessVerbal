@@ -1,5 +1,6 @@
 import { BoardController } from "./board/boardController.js";
 import { BoardEventController } from "./board/boardEventController.js";
+import { ControlBox } from "./shape/controlBox.js";
 import { Rect } from "./shape/rect.js";
 class Verbal {
     constructor(containerDom, renderCanvasDom, eventCanvasDom) {
@@ -16,6 +17,9 @@ class Verbal {
     }
     rect(props) {
         return new Rect(props);
+    }
+    controlBox(props) {
+        return new ControlBox(props);
     }
 }
 /**

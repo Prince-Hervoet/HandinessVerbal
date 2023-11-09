@@ -6,6 +6,7 @@ export class BaseWidget implements IWidget {
   public y: number = 0; // top
   public width: number = 0; // 宽 （矩形）
   public height: number = 0; // 高 （矩形）
+  public rotateAngle: number = 0; // 旋转角度
   public style: any; // canvas风格
   public points: Point[] = []; // 顶点信息 （闭合图形）
 

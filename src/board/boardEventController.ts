@@ -1,4 +1,5 @@
 import { BaseWidget } from "../shape/baseWidget.js";
+import { ControlBox } from "../shape/controlBox.js";
 import { Rect } from "../shape/rect.js";
 import { RectFrame } from "../shape/rectFrame.js";
 import { WidgetGroup } from "../shape/widgetGroup.js";
@@ -14,10 +15,16 @@ const hoveringFlagRectStyle = { fillStyle: "rgba(0, 0, 255, 0.3)" };
 const hittingFlagStyle = {
   strokeStyle: "blue",
   lineWidth: 1,
-  shadowBlur: 6,
+  shadowBlur: 4,
   shadowColor: "blue",
 };
 const boxSelectFlagRectStyle = { fillStyle: "rgba(0, 0, 245, 0.2)" };
+const controlBoxStyle = {
+  strokeStyle: "blue",
+  lineWidth: 1,
+  shadowBlur: 4,
+  shadowColor: "blue",
+};
 
 /**
  * 事件类型
@@ -52,10 +59,12 @@ export class BoardEventController {
 
   // =========================================================================
   static hoveringFlag: IWidget = new Rect({ style: hoveringFlagRectStyle }); // 悬停标识
-  static hittingFlag: IWidget = new RectFrame({
+  static hittingFlag: IWidget = new ControlBox({
     style: hittingFlagStyle,
   }); // 选中标识
-  static boxSelectFlagRect: IWidget = new Rect({}); // 框选标识
+  static boxSelectFlagRect: IWidget = new Rect({
+    style: boxSelectFlagRectStyle,
+  }); // 框选标识
   //! =========================================================================
 
   constructor(boardController: BoardController) {
@@ -167,7 +176,7 @@ function mouseMoveHittingHandler(
   event: MouseEvent,
   boardEventController: BoardEventController
 ) {
-  // 选中状态下鼠标移动，继续检测是否需要悬停
+  // 选中状态下鼠标移动，检测是否在控制小方块上
   const { clientX, clientY } = event;
 }
 
@@ -211,13 +220,7 @@ function mouseMoveBoxSelectHandler(
     mouseDownPos[1]
   );
   // 画出框选矩形
-  BoardEventController.boxSelectFlagRect.update({
-    x,
-    y,
-    width,
-    height,
-    style: boxSelectFlagRectStyle,
-  });
+  BoardEventController.boxSelectFlagRect.update({ x, y, width, height });
   boardController.placeEventBoard(BoardEventController.boxSelectFlagRect);
 }
 

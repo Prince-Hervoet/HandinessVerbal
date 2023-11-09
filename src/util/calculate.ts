@@ -115,3 +115,42 @@ export function boxSelectHittingFlagPosCal(
   }
   return { x: xmin, y: ymin, width: xmax - xmin, height: ymax - ymin };
 }
+
+/**
+ * 判断坐标是否在控制小方块上
+ * @param x
+ * @param y
+ * @param widget
+ */
+export function judgePositionOnControlBox(
+  mouseX: number,
+  mouseY: number,
+  widget: IWidget
+) {
+  const { x, y, width, height } = widget.getBoundingBoxPosition();
+  const a1 = mouseX - x,
+    b1 = mouseY - y;
+  if (a1 * a1 + b1 * b1 <= 25) {
+    // 在西北
+  }
+}
+
+/**
+ * 将坐标x , y 以 ox , oy 为圆心旋转 angle角度
+ * @param x
+ * @param y
+ * @param ox
+ * @param oy
+ * @param angle
+ */
+export function rotatePosition(
+  x: number,
+  y: number,
+  ox: number,
+  oy: number,
+  angle: number
+) {
+  const nx = (x - ox) * Math.cos(angle) - (y - oy) * Math.sin(angle) + ox;
+  const ny = (x - ox) * Math.sin(angle) + (y - oy) * Math.cos(angle) + oy;
+  return { x: nx, y: ny };
+}
