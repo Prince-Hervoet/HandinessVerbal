@@ -22,6 +22,14 @@ export interface ICanvasProps {
   height: number;
 }
 
+export interface IWidgetProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  style: any;
+}
+
 export interface IWidget {
   /**
    * 每个部件自主实现的绘制方法

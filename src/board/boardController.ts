@@ -84,14 +84,28 @@ export class BoardController {
     this.eventBoard!.renderAll();
   }
 
+  /**
+   * 清空渲染层渲染列表
+   */
   clearRenderBoard() {
     this.renderBoard!.clearRenderList();
     this.renderBoard!.renderAll();
   }
 
+  /**
+   * 清空事件层渲染列表
+   */
   clearEventBoard() {
     this.eventBoard!.clearRenderList();
     this.eventBoard!.renderAll();
+  }
+
+  eraseRenderBoard() {
+    this.renderBoard!.eraseAll();
+  }
+
+  eraseEventBoard() {
+    this.eventBoard!.eraseAll();
   }
 
   /**
@@ -99,13 +113,28 @@ export class BoardController {
    * @param widget
    */
   transferToEventBoard(widget: IWidget) {
-    if (!this.eventBoard) return;
+    if (!this.eventBoard || !this.renderBoard) return;
     // 先将这个部件从渲染层隐藏掉
-    this.renderBoard!.setWidgetNodeActive(widget, false);
-    this.renderBoard!.renderAll();
+    this.renderBoard.setWidgetNodeActive(widget, false);
+    this.renderBoard.renderAll();
 
     // 将这个部件放到事件层上
     this.eventBoard.add(widget);
+    this.eventBoard.renderAll();
+  }
+
+  /**
+   * 将多个部件传送到事件层，用于响应事件过程的管理
+   */
+  transferWidgetsToEventBoard(widgets: IWidget[]) {
+    if (!this.eventBoard || !this.renderBoard) return;
+    for (const widget of widgets) {
+      // 先将这个部件从渲染层隐藏掉
+      this.renderBoard.setWidgetNodeActive(widget, false);
+      // 将这个部件放到事件层上
+      this.eventBoard.add(widget);
+    }
+    this.renderBoard.renderAll();
     this.eventBoard.renderAll();
   }
 
@@ -114,14 +143,30 @@ export class BoardController {
    * @param widget
    */
   transferToRenderBoard(widget: IWidget) {
-    if (!this.eventBoard) return;
+    if (!this.eventBoard || !this.renderBoard) return;
     // 将这个部件从事件层上清除
     this.eventBoard.remove(widget);
     this.eventBoard.renderAll();
 
     // 将这个部件从渲染层上恢复
-    this.renderBoard!.setWidgetNodeActive(widget, true);
-    this.renderBoard!.renderAll();
+    this.renderBoard.setWidgetNodeActive(widget, true);
+    this.renderBoard.renderAll();
+  }
+
+  /**
+   * 将部件从渲染层传送回事件层
+   * @param widgets
+   */
+  transferWidgetsToRenderBoard(widgets: IWidget[]) {
+    if (!this.eventBoard || !this.renderBoard) return;
+    for (const widget of widgets) {
+      // 将这个部件从事件层上清除
+      this.eventBoard.remove(widget);
+      // 将这个部件从渲染层上恢复
+      this.renderBoard.setWidgetNodeActive(widget, true);
+    }
+    this.eventBoard.renderAll();
+    this.renderBoard.renderAll();
   }
 
   /**

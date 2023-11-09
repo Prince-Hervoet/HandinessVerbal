@@ -14,6 +14,7 @@ export class Rect extends BaseWidget {
   }
 
   private calPoints() {
+    this.points = [];
     this.points.push({ x: this.x, y: this.y });
     this.points.push({ x: this.x + this.width, y: this.y });
     this.points.push({ x: this.x + this.width, y: this.y + this.height });

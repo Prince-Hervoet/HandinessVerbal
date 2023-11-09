@@ -1,3 +1,4 @@
+import { BaseWidget } from "../shape/baseWidget.js";
 import { Rect } from "../shape/rect.js";
 import { RectFrame } from "../shape/rectFrame.js";
 import { WidgetGroup } from "../shape/widgetGroup.js";
@@ -12,7 +13,7 @@ import { BoardController } from "./boardController.js";
 const hoveringFlagRectStyle = { fillStyle: "rgba(0, 0, 255, 0.3)" };
 const hittingFlagStyle = {
   strokeStyle: "blue",
-  lineWidth: 3,
+  lineWidth: 1,
   shadowBlur: 6,
   shadowColor: "blue",
 };
@@ -50,12 +51,11 @@ export class BoardEventController {
   //！ =========================================================================
 
   // =========================================================================
-  static hoveringFlagRect: IWidget = new Rect({}); // 悬停标识
+  static hoveringFlag: IWidget = new Rect({ style: hoveringFlagRectStyle }); // 悬停标识
   static hittingFlag: IWidget = new RectFrame({
     style: hittingFlagStyle,
   }); // 选中标识
   static boxSelectFlagRect: IWidget = new Rect({}); // 框选标识
-  static widgetGroup: IWidget = new WidgetGroup({}); // 多选组
   //! =========================================================================
 
   constructor(boardController: BoardController) {
@@ -92,6 +92,7 @@ export class BoardEventController {
   }
 }
 
+// mouseMove
 // =============================================================================
 /**
  * 鼠标移动函数
@@ -112,6 +113,12 @@ function mouseMoveHandler(
     case EventStateEnum.HITTING:
       mouseMoveHittingHandler(event, boardEventController);
       break;
+    case EventStateEnum.CATCHING:
+      mouseMoveCatchingHandler(event, boardEventController);
+      break;
+    case EventStateEnum.DRAGGING:
+      mouseMoveDraggingHandler(event, boardEventController);
+      break;
     case EventStateEnum.BOXSELECT:
       mouseMoveBoxSelectHandler(event, boardEventController);
       break;
@@ -129,15 +136,9 @@ function mouseMoveCommonHandler(
   boardEventController.hoveringWidget = widget;
   boardEventController.eventState = EventStateEnum.HOVERING;
   // 画出悬停标识
-  const hoveringFlag = BoardEventController.hoveringFlagRect;
+  const hoveringFlag = BoardEventController.hoveringFlag;
   const { x, y, width, height } = widget.getBoundingBoxPosition();
-  hoveringFlag.update({
-    x,
-    y,
-    width,
-    height,
-    style: hoveringFlagRectStyle,
-  });
+  hoveringFlag.update({ x, y, width, height });
   boardController.placeEventBoard(hoveringFlag);
 }
 
@@ -150,10 +151,15 @@ function mouseMoveHoveringHandler(
   const widget = boardController.checkPositionOnRenderBoard(clientX, clientY);
   if (widget) {
     boardEventController.hoveringWidget = widget;
+    const hoveringFlag = BoardEventController.hoveringFlag;
+    const { x, y, width, height } = widget.getBoundingBoxPosition();
+    hoveringFlag.update({ x, y, width, height });
+    boardController.clearEventBoard();
+    boardController.placeEventBoard(hoveringFlag);
   } else {
     boardEventController.hoveringWidget = null;
     boardEventController.eventState = EventStateEnum.COMMON;
-    boardController.removeFromEventBoard(BoardEventController.hoveringFlagRect);
+    boardController.removeFromEventBoard(BoardEventController.hoveringFlag);
   }
 }
 
@@ -163,6 +169,31 @@ function mouseMoveHittingHandler(
 ) {
   // 选中状态下鼠标移动，继续检测是否需要悬停
   const { clientX, clientY } = event;
+}
+
+function mouseMoveCatchingHandler(
+  event: MouseEvent,
+  boardEventController: BoardEventController
+) {
+  // 在抓住状态下移动 --> 开始拖拽
+  // 将部件从渲染层转移至事件层
+  const { clientX, clientY } = event;
+  const boardController = boardEventController.boardController!;
+  const target = boardEventController.catchingWidget!;
+  boardEventController.catchingWidget = null;
+  boardEventController.draggingWidget = target;
+  boardEventController.eventState = EventStateEnum.DRAGGING;
+  const { x, y } = target.getBoundingBoxPosition();
+  boardEventController.mouseDownOffset = [clientX - x, clientY - y];
+  boardController.clearEventBoard();
+  if ((target as BaseWidget).shapeName === "widgetGroup") {
+    // 如果是部件组，则需要另外处理
+    boardController.transferWidgetsToEventBoard(
+      (target as WidgetGroup).widgets
+    );
+  } else {
+    boardController.transferToEventBoard(target);
+  }
 }
 
 function mouseMoveBoxSelectHandler(
@@ -197,10 +228,17 @@ function mouseMoveDraggingHandler(
   // 拖拽，当鼠标移动时，保持部件和鼠标的偏移量不变
   const { clientX, clientY } = event;
   const boardController = boardEventController.boardController!;
+  const target = boardEventController.draggingWidget!;
+  target.update({
+    x: clientX - boardEventController.mouseDownOffset[0],
+    y: clientY - boardEventController.mouseDownOffset[1],
+  });
+  boardController.eventBoardRenderAll();
 }
 
 //! =============================================================================
 
+// mouseDown
 // =============================================================================
 /**
  * 鼠标按下函数
@@ -245,7 +283,7 @@ function mouseDownHoveringHandler(
   boardEventController.hoveringWidget = null;
   boardEventController.eventState = EventStateEnum.CATCHING; // 控制器状态变成抓取
   // 去掉悬停标识，画出选中标识
-  boardController.removeFromEventBoard(BoardEventController.hoveringFlagRect);
+  boardController.removeFromEventBoard(BoardEventController.hoveringFlag);
   const { x, y, width, height } =
     boardEventController.catchingWidget!.getBoundingBoxPosition();
   const hittingFlag = BoardEventController.hittingFlag;
@@ -291,6 +329,7 @@ function mouseDownHittingHandler(
 
 //! =============================================================================
 
+// mouseUp
 // =============================================================================
 function mouseUpHandler(
   event: MouseEvent,
@@ -305,6 +344,9 @@ function mouseUpHandler(
       break;
     case EventStateEnum.CATCHING:
       mouseUpCatchingHandler(event, boardEventController);
+      break;
+    case EventStateEnum.DRAGGING:
+      mouseUpDraggingHandler(event, boardEventController);
       break;
     case EventStateEnum.BOXSELECT:
       mouseUpBoxSelectHandler(event, boardEventController);
@@ -336,6 +378,30 @@ function mouseUpCatchingHandler(
   boardEventController.hittingWidget = boardEventController.catchingWidget;
   boardEventController.catchingWidget = null;
   boardEventController.eventState = EventStateEnum.HITTING;
+}
+
+function mouseUpDraggingHandler(
+  event: MouseEvent,
+  boardEventController: BoardEventController
+) {
+  // 拖拽完放开鼠标，要将部件从事件层转移到渲染层上
+  const { clientX, clientY } = event;
+  const boardController = boardEventController.boardController!;
+  const target = boardEventController.draggingWidget!;
+  boardEventController.draggingWidget = null;
+  boardEventController.eventState = EventStateEnum.HITTING;
+  boardEventController.hittingWidget = target;
+  if ((target as BaseWidget).shapeName === "widgetGroup") {
+    boardController.transferWidgetsToRenderBoard(
+      (target as WidgetGroup).widgets
+    );
+  } else {
+    boardController.transferToRenderBoard(target);
+  }
+  const hittingFlag = BoardEventController.hittingFlag;
+  const { x, y, width, height } = target.getBoundingBoxPosition();
+  hittingFlag.update({ x, y, width, height });
+  boardController.placeEventBoard(hittingFlag);
 }
 
 function mouseUpBoxSelectHandler(
@@ -371,6 +437,7 @@ function mouseUpBoxSelectHandler(
     boardController.placeEventBoard(hittingFlag);
   } else if (widgets.length > 1) {
     // 如果框选到不止一个部件，就生成widgetGroup
+    // widgetGroup 不需要放置到渲染层上，只需要临时记录即可
     boardEventController.eventState = EventStateEnum.HITTING;
     const { x, y, width, height } = boxSelectHittingPositionCal(widgets);
     const widgetGroup: IWidget = new WidgetGroup({
