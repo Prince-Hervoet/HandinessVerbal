@@ -443,13 +443,7 @@ function mouseUpBoxSelectHandler(
     // widgetGroup 不需要放置到渲染层上，只需要临时记录即可
     boardEventController.eventState = EventStateEnum.HITTING;
     const { x, y, width, height } = boxSelectHittingPositionCal(widgets);
-    const widgetGroup: IWidget = new WidgetGroup({
-      x,
-      y,
-      width,
-      height,
-      widgets,
-    });
+    const widgetGroup = new WidgetGroup({ x, y, width, height, widgets });
     boardEventController.hittingWidget = widgetGroup;
     const hittingFlag = BoardEventController.hittingFlag;
     hittingFlag.update({ x, y, width, height });

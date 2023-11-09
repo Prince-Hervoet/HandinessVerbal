@@ -31,13 +31,22 @@ export interface IWidgetProps {
 }
 
 export interface IWidget {
+  shapeName: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotateAngle: number;
+  style: any;
+  points: Point[];
+
   /**
    * 每个部件自主实现的绘制方法
    */
   render(ctx: CanvasRenderingContext2D): void;
 
   /**
-   * 每个部件的更新方法
+   * 部件的更新方法
    */
   update(props: any): void;
 

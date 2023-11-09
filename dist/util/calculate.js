@@ -96,7 +96,7 @@ export function judgePositionOnControlBox(mouseX, mouseY, widget) {
     const { x, y, width, height } = widget.getBoundingBoxPosition();
     const a1 = mouseX - x, b1 = mouseY - y;
     if (a1 * a1 + b1 * b1 <= 25) {
-        // 在西北
+        // 西北
     }
 }
 /**
