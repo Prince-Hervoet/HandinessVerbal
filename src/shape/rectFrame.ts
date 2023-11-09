@@ -26,11 +26,11 @@ export class RectFrame extends BaseWidget {
   }
 
   update(props: any): void {
-    this.x = props.x;
-    this.y = props.y;
-    this.width = props.width;
-    this.height = props.height;
-    this.style = props.style;
+    this.x = props.x ?? this.x;
+    this.y = props.y ?? this.y;
+    this.width = props.width ?? this.width;
+    this.height = props.height ?? this.height;
+    this.style = props.style ?? this.style;
     this.calPoints();
   }
 

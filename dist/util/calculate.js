@@ -70,3 +70,19 @@ export function judgeRectOverlap(pos1, pos2) {
     }
     return false;
 }
+/**
+ * 框选多个部件，计算最终的选中盒子位置
+ * @param widgets
+ */
+export function boxSelectHittingFlagPosCal(widgets) {
+    const b1 = widgets[0].getBoundingBoxPosition();
+    let xmin = b1.x, ymin = b1.y, xmax = b1.x + b1.width, ymax = b1.y + b1.height;
+    for (let i = 1; i < widgets.length; ++i) {
+        const b = widgets[i].getBoundingBoxPosition();
+        xmin = Math.min(xmin, b.x);
+        ymin = Math.min(ymin, b.y);
+        xmax = Math.max(xmax, b.x + b.width);
+        ymax = Math.max(ymax, b.y + b.height);
+    }
+    return { x: xmin, y: ymin, width: xmax - xmin, height: ymax - ymin };
+}

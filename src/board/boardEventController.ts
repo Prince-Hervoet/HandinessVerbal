@@ -1,6 +1,8 @@
 import { Rect } from "../shape/rect.js";
 import { RectFrame } from "../shape/rectFrame.js";
+import { WidgetGroup } from "../shape/widgetGroup.js";
 import {
+  boxSelectHittingFlagPosCal as boxSelectHittingPositionCal,
   boxSelectRectPositionCal,
   judgePositionInWidget,
 } from "../util/calculate.js";
@@ -49,13 +51,26 @@ export class BoardEventController {
 
   // =========================================================================
   static hoveringFlagRect: IWidget = new Rect({}); // 悬停标识
-  static hittingFlagRectFrame: IWidget = new RectFrame({}); // 选中标识
+  static hittingFlag: IWidget = new RectFrame({
+    style: hittingFlagStyle,
+  }); // 选中标识
   static boxSelectFlagRect: IWidget = new Rect({}); // 框选标识
+  static widgetGroup: IWidget = new WidgetGroup({}); // 多选组
   //! =========================================================================
 
   constructor(boardController: BoardController) {
     this.boardController = boardController;
     this.bindEvent();
+  }
+
+  /**
+   * 清除记录的部件
+   */
+  clearRemarkWidgets() {
+    this.hittingWidget = null;
+    this.hoveringWidget = null;
+    this.catchingWidget = null;
+    this.draggingWidget = null;
   }
 
   /**
@@ -93,6 +108,9 @@ function mouseMoveHandler(
       break;
     case EventStateEnum.HOVERING:
       mouseMoveHoveringHandler(event, boardEventController);
+      break;
+    case EventStateEnum.HITTING:
+      mouseMoveHittingHandler(event, boardEventController);
       break;
     case EventStateEnum.BOXSELECT:
       mouseMoveBoxSelectHandler(event, boardEventController);
@@ -137,6 +155,14 @@ function mouseMoveHoveringHandler(
     boardEventController.eventState = EventStateEnum.COMMON;
     boardController.removeFromEventBoard(BoardEventController.hoveringFlagRect);
   }
+}
+
+function mouseMoveHittingHandler(
+  event: MouseEvent,
+  boardEventController: BoardEventController
+) {
+  // 选中状态下鼠标移动，继续检测是否需要悬停
+  const { clientX, clientY } = event;
 }
 
 function mouseMoveBoxSelectHandler(
@@ -222,15 +248,9 @@ function mouseDownHoveringHandler(
   boardController.removeFromEventBoard(BoardEventController.hoveringFlagRect);
   const { x, y, width, height } =
     boardEventController.catchingWidget!.getBoundingBoxPosition();
-  const hittingFlagRectFrame = BoardEventController.hittingFlagRectFrame;
-  hittingFlagRectFrame.update({
-    x,
-    y,
-    width,
-    height,
-    style: hittingFlagStyle,
-  });
-  boardController.placeEventBoard(BoardEventController.hittingFlagRectFrame);
+  const hittingFlag = BoardEventController.hittingFlag;
+  hittingFlag.update({ x, y, width, height });
+  boardController.placeEventBoard(BoardEventController.hittingFlag);
 }
 
 function mouseDownHittingHandler(
@@ -255,6 +275,11 @@ function mouseDownHittingHandler(
       boardEventController.catchingWidget = widget;
       boardEventController.hittingWidget = null;
       boardEventController.eventState = EventStateEnum.CATCHING;
+      boardController.clearEventBoard();
+      const hittingFlag = BoardEventController.hittingFlag;
+      const { x, y, width, height } = widget.getBoundingBoxPosition();
+      hittingFlag.update({ x, y, width, height });
+      boardController.placeEventBoard(hittingFlag);
     } else {
       // 如果没有按到任何部件，则变成框选
       boardEventController.hittingWidget = null;
@@ -294,10 +319,7 @@ function mouseUpCommonHandler(
   // 将所有状态清除
   const boardController = boardEventController.boardController!;
   boardEventController.eventState = EventStateEnum.COMMON;
-  boardEventController.catchingWidget = null;
-  boardEventController.hoveringWidget = null;
-  boardEventController.hittingWidget = null;
-  boardEventController.draggingWidget = null;
+  boardEventController.clearRemarkWidgets();
   boardController.clearEventBoard();
 }
 
@@ -324,8 +346,8 @@ function mouseUpBoxSelectHandler(
   // todo：多选
   const { clientX, clientY } = event;
   const boardController = boardEventController.boardController!;
-  boardEventController.eventState = EventStateEnum.COMMON;
-  const widgets = boardController.checkRectOverlapOnRenderBoard(
+  // 检测框选矩形和渲染层上的部件是否有重叠，返回一个数组
+  const widgets: IWidget[] = boardController.checkRectOverlapOnRenderBoard(
     boxSelectRectPositionCal(
       clientX,
       clientY,
@@ -334,7 +356,34 @@ function mouseUpBoxSelectHandler(
     )
   );
   boardEventController.mouseDownPosition = [];
-  console.log(widgets);
   boardController.clearEventBoard();
+  if (widgets.length === 0) {
+    // 如果没有框选到任何东西，直接变成普通状态，并清空事件层
+    boardEventController.eventState = EventStateEnum.COMMON;
+  } else if (widgets.length === 1) {
+    // 如果框选到一个部件，则变成一个部件的选中情况
+    // 画出新的选中框
+    boardEventController.hittingWidget = widgets[0];
+    boardEventController.eventState = EventStateEnum.HITTING;
+    const hittingFlag = BoardEventController.hittingFlag;
+    const { x, y, width, height } = widgets[0].getBoundingBoxPosition();
+    hittingFlag.update({ x, y, width, height });
+    boardController.placeEventBoard(hittingFlag);
+  } else if (widgets.length > 1) {
+    // 如果框选到不止一个部件，就生成widgetGroup
+    boardEventController.eventState = EventStateEnum.HITTING;
+    const { x, y, width, height } = boxSelectHittingPositionCal(widgets);
+    const widgetGroup: IWidget = new WidgetGroup({
+      x,
+      y,
+      width,
+      height,
+      widgets,
+    });
+    boardEventController.hittingWidget = widgetGroup;
+    const hittingFlag = BoardEventController.hittingFlag;
+    hittingFlag.update({ x, y, width, height });
+    boardController.placeEventBoard(hittingFlag);
+  }
 }
 //! =============================================================================

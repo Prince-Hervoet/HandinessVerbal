@@ -2,7 +2,7 @@ import { getVerbalCanvas } from "../dist/index.js";
 
 const dom = document.getElementById("gogogo");
 
-const verbal = getVerbalCanvas(dom, { width: 1000, height: 500 });
+const verbal = getVerbalCanvas(dom, { width: 1000, height: 1000 });
 const rectWidget = verbal.rect({
   x: 100,
   y: 100,
@@ -10,5 +10,14 @@ const rectWidget = verbal.rect({
   height: 150,
   style: { fillStyle: "red" },
 });
-console.log(rectWidget);
 verbal.place(rectWidget);
+
+const rectWidget2 = verbal.rect({
+  x: 300,
+  y: 300,
+  width: 100,
+  height: 100,
+  style: { fillStyle: "green" },
+});
+
+verbal.place(rectWidget2);
