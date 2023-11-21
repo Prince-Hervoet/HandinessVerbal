@@ -1,9 +1,10 @@
 import { Renderer } from "../core/renderer";
+import { SimpleEventData } from "../event/eventCenter";
 import { Point, degreeToRadian, rayMethod } from "../util/math";
 
 export interface ISimpleEvent {
   on(name: string, handler: Function): void;
-  emit(name: string, args: any): void;
+  emit(name: string, args: SimpleEventData): void;
   delete(name: string): void;
 }
 
@@ -91,20 +92,36 @@ export abstract class VerbalWidget implements ISimpleEvent {
 
   protected _render(renderer: Renderer) {}
 
-  update(data: any) {}
+  update(data: any) {
+    this.initData(data);
+    this.emit("_update_watch", {
+      target: this,
+      eventType: "_update_watch",
+    });
+  }
 
   render(renderer: Renderer) {
     if (this.width === 0 || this.height === 0) return;
     const ctx = renderer.getCanvasCtx();
     ctx.save();
     this.transform(ctx);
-    renderer.render(this);
+    this._render(renderer);
     ctx.restore();
   }
 
   get(key: string) {
     const self: any = this;
     return self[key];
+  }
+
+  getBoundingBoxInfo() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      degree: this.degree,
+    };
   }
 
   set(key: string, value: any) {

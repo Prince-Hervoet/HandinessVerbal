@@ -1,5 +1,7 @@
 import { VerbalCanvas } from "../core/verbalCanvas";
 import { Point } from "../util/math";
+import { HittingFlag } from "../widget/hittingFlag";
+import { HoveringFlag } from "../widget/hoveringFlag";
 import { VerbalWidget } from "../widget/verbalWidget";
 import { mouseDownHandler } from "./mouseDown";
 import { mouseMoveHandler } from "./mouseMove";
@@ -22,6 +24,9 @@ export const StateEnum = {
 class ActionRemark {
   mouseDownPoint: Point = { x: 0, y: 0 };
   mouseDownOffset: Point = { x: 0, y: 0 };
+
+  gHoveringFlag: VerbalWidget = new HoveringFlag({});
+  gHittingFlag: VerbalWidget = new HittingFlag({});
 }
 
 export class EventCenter {
@@ -71,6 +76,10 @@ export class EventCenter {
     this.targetDom.addEventListener("mouseup", (event) => {
       mouseUpHandler(event, this);
     });
+  }
+
+  getTargetDom() {
+    return this.targetDom;
   }
 
   setState(state: number) {

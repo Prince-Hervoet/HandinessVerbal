@@ -35,6 +35,10 @@ export function initCanvas(
   eventCanvasDom.setAttribute("width", width + "");
   eventCanvasDom.setAttribute("height", height + "");
   eventCanvasDom.setAttribute("style", `position: absolute; left: 0; top: 0;`);
+  eventCanvasDom.setAttribute(
+    "oldStyle",
+    `position: absolute; left: 0; top: 0;`
+  );
 
   const renderCanvas = new VerbalCanvas(
     renderCanvasDom,
