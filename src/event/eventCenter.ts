@@ -1,5 +1,6 @@
 import { VerbalCanvas } from "../core/verbalCanvas";
 import { Point } from "../util/math";
+import { BoxSelectRect } from "../widget/boxSelectRect";
 import { HittingFlag } from "../widget/hittingFlag";
 import { HoveringFlag } from "../widget/hoveringFlag";
 import { VerbalWidget } from "../widget/verbalWidget";
@@ -19,14 +20,30 @@ export const StateEnum = {
   HITTING: 1,
   CATCHING: 2,
   DRAGGING: 3,
+  BOXSELECT: 4,
+  TRANSFORM: 5,
 };
+
+export const TransformDirsEnum = [
+  "nw-resize",
+  "ne-resize",
+  "se-resize",
+  "sw-resize",
+  "n-resize",
+  "e-resize",
+  "s-resize",
+  "w-resize",
+  "grabbing",
+];
 
 class ActionRemark {
   mouseDownPoint: Point = { x: 0, y: 0 };
   mouseDownOffset: Point = { x: 0, y: 0 };
+  transformDirIndex: number = -1;
 
   gHoveringFlag: VerbalWidget = new HoveringFlag({});
   gHittingFlag: VerbalWidget = new HittingFlag({});
+  gBoxSelectFlag: VerbalWidget = new BoxSelectRect({});
 }
 
 export class EventCenter {
@@ -53,13 +70,15 @@ export class EventCenter {
 
   static bindUpdateWatchEvent(widget: VerbalWidget, ec: EventCenter) {
     if (!widget) return;
-    widget.on("_update_watch", (data: SimpleEventData) => {
+    widget.delete("_update_watch_");
+    widget.on("_update_watch_", (data: SimpleEventData) => {
       if (ec.isPendingUpdate) return;
       ec.isPendingUpdate = true;
       requestAnimationFrame(() => {
         const widget = data.target;
         if (ec.renderCanvas.has(widget)) ec.renderCanvas.renderAll();
         if (ec.eventCanvas.has(widget)) ec.eventCanvas.renderAll();
+        ec.isPendingUpdate = false;
       });
     });
   }
@@ -116,5 +135,17 @@ export class EventCenter {
 
   getActionRemark() {
     return this.actionRemark;
+  }
+
+  transferToEventCanvas(...widgets: VerbalWidget[]) {
+    for (const widget of widgets) this.renderCanvas.setIsRender(widget, false);
+    this.renderCanvas.renderAll();
+    this.eventCanvas.place(...widgets);
+  }
+
+  transferToRenderCanvas(...widgets: VerbalWidget[]) {
+    for (const widget of widgets) this.renderCanvas.setIsRender(widget, true);
+    this.renderCanvas.renderAll();
+    this.eventCanvas.remove(...widgets);
   }
 }

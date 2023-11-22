@@ -1,5 +1,6 @@
 import { VerbalWidget } from "../widget/verbalWidget";
 import { Renderer } from "./renderer";
+import { Point, boxSelectInclusion } from "../util/math";
 
 export class VerbalCanvas {
   private canvasDom: HTMLCanvasElement;
@@ -54,15 +55,15 @@ export class VerbalCanvas {
   renderAll() {
     this.erase();
     if (this.widgetToNode.size === 0) return;
-    const head = this.renderList.getHead();
-    let cursor = this.renderList.getTail();
-    cursor = cursor.prev!;
-    while (cursor !== head) {
+    const tail = this.renderList.getTail();
+    let cursor = this.renderList.getHead();
+    cursor = cursor.next!;
+    while (cursor !== tail) {
       if (cursor.isRender) {
         const widget = cursor.value!;
         widget.render(this.renderer);
       }
-      cursor = cursor.prev!;
+      cursor = cursor.next!;
     }
   }
 
@@ -79,6 +80,23 @@ export class VerbalCanvas {
       cursor = cursor.prev!;
     }
     return null;
+  }
+
+  lookupBoxSelectWidgets(box: Point[]): VerbalWidget[] {
+    const ans: VerbalWidget[] = [];
+    if (this.widgetToNode.size === 0) return ans;
+    const tail = this.renderList.getTail();
+    let cursor = this.renderList.getHead();
+    cursor = cursor.next!;
+    while (cursor !== tail) {
+      if (cursor.isRender) {
+        const widget = cursor.value!;
+        if (boxSelectInclusion(box, widget.get("boundingBoxPoints")))
+          ans.push(widget);
+      }
+      cursor = cursor.next!;
+    }
+    return ans;
   }
 
   setIsRender(widget: VerbalWidget, isRender: boolean) {

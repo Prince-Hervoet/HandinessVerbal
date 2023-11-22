@@ -13,6 +13,28 @@ export function removeHoveringFlag(ec: EventCenter) {
   ec.getEventCanvas().remove(hoveringFlag);
 }
 
-export function placeHittingFlag(widget: VerbalWidget, ec: EventCenter) {}
+export function placeHittingFlag(widget: VerbalWidget, ec: EventCenter) {
+  const hittingFlag = ec.getActionRemark().gHittingFlag;
+  const { x, y, width, height, degree } = widget.getBoundingBoxInfo();
+  hittingFlag.update({ x, y, width, height, degree });
+  widget.set("transformer", hittingFlag);
+  ec.getEventCanvas().place(hittingFlag);
+}
 
-export function removeHittingFlag(ec: EventCenter) {}
+export function removeHittingFlag(ec: EventCenter) {
+  const hittingFlag = ec.getActionRemark().gHittingFlag;
+  const widget = ec.getHitting()!;
+  widget.set("transformer", null);
+  ec.getEventCanvas().remove(hittingFlag);
+}
+
+export function placeBoxSelectFlag(info: any, ec: EventCenter) {
+  const boxSelectFlag = ec.getActionRemark().gBoxSelectFlag;
+  boxSelectFlag.update(info);
+  ec.getEventCanvas().place(boxSelectFlag);
+}
+
+export function removeBoxSelectFlag(ec: EventCenter) {
+  const boxSelectFlag = ec.getActionRemark().gBoxSelectFlag;
+  ec.getEventCanvas().remove(boxSelectFlag);
+}

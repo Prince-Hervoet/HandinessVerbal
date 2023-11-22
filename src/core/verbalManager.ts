@@ -19,6 +19,10 @@ export class VerbalManager {
   }
 
   place(...widgets: VerbalWidget[]) {
+    for (const widget of widgets) {
+      if (!widget) continue;
+      EventCenter.bindUpdateWatchEvent(widget, this.eventCenter);
+    }
     this.renderCanvas.place(...widgets);
   }
 
