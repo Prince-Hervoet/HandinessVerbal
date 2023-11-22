@@ -1,4 +1,5 @@
 import { RoughCanvas } from "../../node_modules/roughjs/bin/canvas";
+import { Point } from "../util/math";
 import { VerbalWidget } from "../widget/verbalWidget";
 
 export interface Renderer {
@@ -29,6 +30,16 @@ export class RoughCanvasRenderer implements Renderer {
         this.rc.rectangle(
           widget.get("x"),
           widget.get("y"),
+          widget.get("width"),
+          widget.get("height"),
+          widget.get("style")
+        );
+        break;
+      case "ellipse":
+        const basePoint: Point = widget.get("basePoint");
+        this.rc.ellipse(
+          basePoint.x,
+          basePoint.y,
           widget.get("width"),
           widget.get("height"),
           widget.get("style")
