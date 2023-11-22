@@ -53,7 +53,7 @@ const ellTest = new Ellipse({
   style: { fill: "green", seed: 4, fillStyle: "hachure" },
 });
 
-canvas.place(rect);
+canvas.place(rect, ellTest, imgTest);
 console.log(rect);
 
 // rect.update({ x: 200, y: 200 });

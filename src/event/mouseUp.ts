@@ -1,8 +1,4 @@
-import {
-  boxSelectInclusion,
-  calBoxSelectInfo,
-  calBoxSelectPoints,
-} from "../util/math";
+import { calBoxSelectPoints } from "../util/math";
 import { EventCenter, StateEnum } from "./eventCenter";
 import {
   placeHittingFlag,
@@ -53,6 +49,8 @@ function mouseUpBoxSelect(event: MouseEvent, ec: EventCenter) {
     placeHittingFlag(widget, ec);
     ec.setState(StateEnum.HITTING);
   } else if (widgets.length > 1) {
+    // todo: 多选
+    ec.setState(StateEnum.COMMON);
   } else {
     ec.setState(StateEnum.COMMON);
   }
