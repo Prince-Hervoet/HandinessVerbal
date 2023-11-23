@@ -1,6 +1,6 @@
 import { Renderer } from "../core/renderer";
 import { SimpleEventData } from "../event/eventCenter";
-import { Point, degreeToRadian, rayMethod, rotatePoint } from "../util/math";
+import { Point, degreeToRadian, rotatePoint } from "../util/math";
 
 export interface ISimpleEvent {
   on(name: string, handler: Function): void;
@@ -8,6 +8,9 @@ export interface ISimpleEvent {
   delete(name: string): void;
 }
 
+/**
+ * 部件抽象基类
+ */
 export abstract class VerbalWidget implements ISimpleEvent {
   // 包围盒位置
   x: number = 0;
@@ -43,26 +46,31 @@ export abstract class VerbalWidget implements ISimpleEvent {
     this.updateTransformer();
   }
 
-  on(name: string, handler: Function): void {
-    let handlers: Function[] = this.eventObject[name];
-    if (!handlers) {
-      this.eventObject[name] = handlers = [];
-    }
-    handlers.push(handler);
+  /**
+   * 等待子类实现
+   * @param renderer
+   */
+  protected _render(renderer: Renderer) {}
+
+  /**
+   * 等待子类实现
+   */
+  protected updatePathPoints() {}
+
+  /**
+   * 等待子类实现，例如⚪就是特殊的判断方式
+   * @param x
+   * @param y
+   * @returns
+   */
+  isPointOnWidget(x: number, y: number): boolean {
+    return false;
   }
 
-  emit(name: string, args: any): void {
-    const handlers: Function[] = this.eventObject[name];
-    if (!handlers) return;
-    for (const handler of handlers) {
-      handler.call(this, args);
-    }
-  }
-
-  delete(name: string): void {
-    this.eventObject[name] = [];
-  }
-
+  /**
+   * 默认实现，无需子类替换
+   * @param data
+   */
   protected initData(data: any) {
     const self: any = this;
     const keys: string[] = Object.keys(data);
@@ -71,6 +79,10 @@ export abstract class VerbalWidget implements ISimpleEvent {
     }
   }
 
+  /**
+   * 默认实现，无需子类替换
+   * @returns
+   */
   protected updateTransformer() {
     if (!this.transformer) return;
     this.transformer.update({
@@ -82,8 +94,9 @@ export abstract class VerbalWidget implements ISimpleEvent {
     });
   }
 
-  protected updatePathPoints() {}
-
+  /**
+   * 默认实现，无需子类替换
+   */
   protected updateBoundingBoxPoints() {
     this.boundingBoxPoints = [
       { x: this.x, y: this.y },
@@ -93,6 +106,9 @@ export abstract class VerbalWidget implements ISimpleEvent {
     ];
   }
 
+  /**
+   * 基本图形实现，对于特殊的图形例如线段可能需要子类实现
+   */
   protected updateCornerPoints() {
     const padding = 6;
     const cornerWidth = 12;
@@ -164,11 +180,17 @@ export abstract class VerbalWidget implements ISimpleEvent {
     ];
   }
 
+  /**
+   * 默认实现，无需子类替换
+   */
   protected updateBasePoint() {
     this.basePoint.x = this.x + (this.width >> 1);
     this.basePoint.y = this.y + (this.height >> 1);
   }
 
+  /**
+   * 修正中心点，默认实现，无需子类替换
+   */
   protected amendBasePoint() {
     const nPoint = rotatePoint(
       {
@@ -182,6 +204,11 @@ export abstract class VerbalWidget implements ISimpleEvent {
     this.y = nPoint.y - (this.height >> 1);
   }
 
+  /**
+   * 渲染前的变换设置，无需子类替换
+   * @param ctx
+   * @returns
+   */
   protected transform(ctx: CanvasRenderingContext2D) {
     if (this.degree === 0) return;
     ctx.translate(this.basePoint.x, this.basePoint.y);
@@ -189,6 +216,10 @@ export abstract class VerbalWidget implements ISimpleEvent {
     ctx.translate(-this.basePoint.x, -this.basePoint.y);
   }
 
+  /**
+   * 将所有计算过的点数组进行旋转修正，无需子类替换
+   * @returns
+   */
   protected rotatePoints() {
     if (this.degree === 0) return;
     for (let i = 0; i < this.boundingBoxPoints.length; ++i) {
@@ -218,16 +249,13 @@ export abstract class VerbalWidget implements ISimpleEvent {
     }
   }
 
-  protected _render(renderer: Renderer) {}
-
+  /**
+   * 统一更新方式，可能需要子类替换
+   * @param data
+   */
   update(data: any) {
     this.initData(data);
-    this.amendBasePoint();
-    this.updateBoundingBoxPoints();
-    this.updatePathPoints();
-    this.updateCornerPoints();
-    this.updateBasePoint();
-    this.rotatePoints();
+    this.calPointsInfo();
     this.updateTransformer();
     this.emit("_update_watch_", {
       target: this,
@@ -235,6 +263,9 @@ export abstract class VerbalWidget implements ISimpleEvent {
     });
   }
 
+  /**
+   * 计算所需的点数组，一般无需子类替换
+   */
   calPointsInfo() {
     this.amendBasePoint();
     this.updateBoundingBoxPoints();
@@ -244,6 +275,10 @@ export abstract class VerbalWidget implements ISimpleEvent {
     this.rotatePoints();
   }
 
+  /**
+   * 更新位置信息，可能需要子类替换
+   * @param data
+   */
   updatePosition(data: any) {
     this.initData(data);
     this.updateBasePoint();
@@ -283,7 +318,40 @@ export abstract class VerbalWidget implements ISimpleEvent {
     self[key] = value;
   }
 
-  isPointOnWidget(x: number, y: number): boolean {
+  isPointOnCorner(x: number, y: number): boolean {
     return false;
+  }
+
+  stringify() {
+    return JSON.stringify({
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      degree: this.degree,
+      basePoint: this.basePoint,
+      shapeType: this.shapeType,
+      style: this.style,
+    });
+  }
+
+  on(name: string, handler: Function): void {
+    let handlers: Function[] = this.eventObject[name];
+    if (!handlers) {
+      this.eventObject[name] = handlers = [];
+    }
+    handlers.push(handler);
+  }
+
+  emit(name: string, args: any): void {
+    const handlers: Function[] = this.eventObject[name];
+    if (!handlers) return;
+    for (const handler of handlers) {
+      handler.call(this, args);
+    }
+  }
+
+  delete(name: string): void {
+    this.eventObject[name] = [];
   }
 }

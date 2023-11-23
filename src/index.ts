@@ -1,8 +1,9 @@
 import { initCanvas } from "./core/initCanvas";
 import { CanvasImage } from "./widget/canvasImage";
 import { Ellipse } from "./widget/ellipse";
-import { HittingFlag } from "./widget/hittingFlag";
-import { HoveringFlag } from "./widget/hoveringFlag";
+import { HittingFlag } from "./widget/utilWidgets/utilTransformer";
+import { HoveringFlag } from "./widget/utilWidgets/hoveringFlag";
+import { Line } from "./widget/line";
 
 const dom = document.getElementById("app")!;
 const canvas = initCanvas(dom, 1000, 1000);
@@ -53,7 +54,15 @@ const ellTest = new Ellipse({
   style: { fill: "green", seed: 4, fillStyle: "hachure" },
 });
 
-canvas.place(rect, ellTest, imgTest);
-console.log(rect);
+const lineTest = new Line({
+  x1: 100,
+  y1: 100,
+  x2: 300,
+  y2: 300,
+  style: { strokeWidth: 10 },
+});
+
+canvas.place(imgTest, rect);
+console.log(rect.stringify());
 
 // rect.update({ x: 200, y: 200 });

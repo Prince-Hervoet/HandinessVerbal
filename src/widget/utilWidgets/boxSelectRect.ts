@@ -1,5 +1,5 @@
-import { Renderer } from "../core/renderer";
-import { VerbalWidget } from "./verbalWidget";
+import { Renderer } from "../../core/renderer";
+import { VerbalWidget } from "../verbalWidget";
 
 export class BoxSelectRect extends VerbalWidget {
   shapeType: string = "boxSelectRect";

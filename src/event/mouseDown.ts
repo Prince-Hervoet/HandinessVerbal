@@ -1,3 +1,4 @@
+import { VerbalWidget } from "../widget/verbalWidget";
 import { EventCenter, StateEnum } from "./eventCenter";
 import {
   placeHittingFlag,
@@ -47,16 +48,21 @@ function mouseDownHitting(event: MouseEvent, ec: EventCenter) {
   const { offsetX, offsetY } = event;
   if (hovering) {
     if (hovering !== ec.getHitting()) {
-      ec.setHitting(hovering);
       removeHoveringFlag(ec);
       removeHittingFlag(ec);
+      ec.setHitting(hovering);
       placeHittingFlag(hovering, ec);
     }
     ec.getActionRemark().mouseDownOffset = {
       x: offsetX - hovering.get("x"),
       y: offsetY - hovering.get("y"),
     };
-    ec.transferToEventCanvas(hovering);
+    if (EventCenter.isGroup(hovering)) {
+      const widgets: VerbalWidget[] = hovering.get("members");
+      ec.transferToEventCanvas(...widgets, hovering);
+    } else {
+      ec.transferToEventCanvas(hovering);
+    }
     ec.setState(StateEnum.CATCHING);
   } else {
     ec.getActionRemark().mouseDownPoint = { x: offsetX, y: offsetY };

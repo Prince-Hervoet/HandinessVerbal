@@ -30,7 +30,6 @@ export function mouseMoveHandler(event: MouseEvent, ec: EventCenter) {
       mouseMoveCatching(event, ec);
       break;
     case StateEnum.DRAGGING:
-      mouseMoveDragging(event, ec);
       break;
     case StateEnum.TRANSFORM:
       mouseMoveTransform(event, ec);
@@ -99,13 +98,18 @@ function mouseMoveCatching(event: MouseEvent, ec: EventCenter) {
   const mouseDownOffset = ec.getActionRemark().mouseDownOffset;
   const hitting = ec.getHitting()!;
   const { offsetX, offsetY } = event;
-  hitting.updatePosition({
-    x: offsetX - mouseDownOffset.x,
-    y: offsetY - mouseDownOffset.y,
-  });
+  if (EventCenter.isGroup(hitting)) {
+    hitting.update({
+      x: offsetX - mouseDownOffset.x,
+      y: offsetY - mouseDownOffset.y,
+    });
+  } else {
+    hitting.updatePosition({
+      x: offsetX - mouseDownOffset.x,
+      y: offsetY - mouseDownOffset.y,
+    });
+  }
 }
-
-function mouseMoveDragging(event: MouseEvent, ec: EventCenter) {}
 
 function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
   const transformDirIndex = ec.getActionRemark().transformDirIndex;
@@ -147,8 +151,11 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
     case 1:
       nx = offsetX;
       ny = offsetY;
-      if (degree !== 0)
-        ny = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree).y;
+      if (degree !== 0) {
+        nPoint = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree);
+        nx = nPoint.x;
+        ny = nPoint.y;
+      }
       nWidth = nx - x;
       nHeight = y - ny + height;
       if (nWidth <= 1) {

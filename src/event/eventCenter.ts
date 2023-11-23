@@ -1,8 +1,8 @@
 import { VerbalCanvas } from "../core/verbalCanvas";
 import { Point } from "../util/math";
-import { BoxSelectRect } from "../widget/boxSelectRect";
-import { HittingFlag } from "../widget/hittingFlag";
-import { HoveringFlag } from "../widget/hoveringFlag";
+import { BoxSelectRect } from "../widget/utilWidgets/boxSelectRect";
+import { HittingFlag } from "../widget/utilWidgets/utilTransformer";
+import { HoveringFlag } from "../widget/utilWidgets/hoveringFlag";
 import { VerbalWidget } from "../widget/verbalWidget";
 import { mouseDownHandler } from "./mouseDown";
 import { mouseMoveHandler } from "./mouseMove";
@@ -81,6 +81,10 @@ export class EventCenter {
         ec.isPendingUpdate = false;
       });
     });
+  }
+
+  static isGroup(widget: VerbalWidget) {
+    return widget.get("shapeType") === "group";
   }
 
   private bindEventHandler() {

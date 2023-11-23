@@ -45,6 +45,15 @@ export class RoughCanvasRenderer implements Renderer {
           widget.get("style")
         );
         break;
+      case "line":
+        this.rc.line(
+          widget.get("p1").x,
+          widget.get("p1").y,
+          widget.get("p2").x,
+          widget.get("p2").y,
+          widget.get("style")
+        );
+        break;
     }
   }
 

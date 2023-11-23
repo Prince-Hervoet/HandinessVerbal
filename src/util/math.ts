@@ -131,3 +131,36 @@ export function calVectorAngle(v1: Vector2, v2: Vector2) {
   if (dir >= 0) return degree;
   return -degree;
 }
+
+export function calMultiPointsInfo(ps: Point[][]) {
+  let xmin = ps[0][0].x;
+  let ymin = ps[0][0].y;
+  let xmax = ps[0][0].x;
+  let ymax = ps[0][0].y;
+  for (const points of ps) {
+    for (let i = 0; i < points.length; ++i) {
+      xmin = Math.min(xmin, points[i].x);
+      ymin = Math.min(ymin, points[i].y);
+      xmax = Math.max(xmax, points[i].x);
+      ymax = Math.max(ymax, points[i].y);
+    }
+  }
+  return { x: xmin, y: ymin, width: xmax - xmin, height: ymax - ymin };
+}
+
+export function calVectorAngle2(v1: Vector2, v2: Vector2) {
+  const x1 = v1.end.x - v1.start.x;
+  const x2 = v2.end.x - v2.start.x;
+  const y1 = v1.end.y - v2.start.y;
+  const y2 = v2.end.y - v2.start.y;
+  const cos =
+    (x1 * x2 + y1 * y2) /
+    (Math.sqrt(x1 * x1 + y1 * y1) * Math.sqrt(x2 * x2 + y2 * y2));
+  return Math.acos(cos) * 57.3;
+}
+
+export function calP2pDistance(p1: Point, p2: Point) {
+  const c1 = p1.x - p2.x;
+  const c2 = p1.y - p2.y;
+  return Math.abs(Math.sqrt(c1 * c1 + c2 * c2));
+}
