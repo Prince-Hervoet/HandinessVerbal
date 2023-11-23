@@ -1,15 +1,22 @@
 import { rayMethod } from "../util/math";
 import { VerbalWidget } from "./verbalWidget";
 
+/**
+ * 部件组
+ */
 export class Group extends VerbalWidget {
   shapeType: string = "group";
-  members: VerbalWidget[] = [];
+  members: VerbalWidget[] = []; // 存放成员部件
 
   constructor(data: any) {
     super(data);
     this.members = data.members ?? [];
   }
 
+  /**
+   * 组更新时，需要将组内成员进行相应的更新
+   * @param data
+   */
   update(data: any): void {
     const oldX = this.x;
     const oldY = this.y;

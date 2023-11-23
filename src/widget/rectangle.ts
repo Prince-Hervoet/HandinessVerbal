@@ -2,6 +2,9 @@ import { Renderer } from "../core/renderer";
 import { rayMethod } from "../util/math";
 import { VerbalWidget } from "./verbalWidget";
 
+/**
+ * 矩形
+ */
 export class Rectangle extends VerbalWidget {
   shapeType: string = "rectangle";
 

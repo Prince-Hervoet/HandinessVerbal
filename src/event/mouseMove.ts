@@ -118,20 +118,18 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
   const basePoint: Point = hitting.get("basePoint");
   const { offsetX, offsetY } = event;
   let nPoint: Point = { x: 0, y: 0 },
-    nx = 0,
-    ny = 0,
     nWidth = 0,
     nHeight = 0;
+  let nx = offsetX;
+  let ny = offsetY;
+  if (degree !== 0) {
+    nPoint = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree);
+    nx = nPoint.x;
+    ny = nPoint.y;
+  }
   switch (transformDirIndex) {
     case 0:
       // 左上角
-      nx = offsetX;
-      ny = offsetY;
-      if (degree !== 0) {
-        nPoint = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree);
-        nx = nPoint.x;
-        ny = nPoint.y;
-      }
       nWidth = x - nx + width;
       nHeight = y - ny + height;
       if (nWidth <= 1) {
@@ -149,13 +147,6 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
       });
       break;
     case 1:
-      nx = offsetX;
-      ny = offsetY;
-      if (degree !== 0) {
-        nPoint = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree);
-        nx = nPoint.x;
-        ny = nPoint.y;
-      }
       nWidth = nx - x;
       nHeight = y - ny + height;
       if (nWidth <= 1) {
@@ -168,13 +159,6 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
       hitting.update({ y: ny, width: nx - x, height: y - ny + height });
       break;
     case 2:
-      nx = offsetX;
-      ny = offsetY;
-      if (degree !== 0) {
-        nPoint = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree);
-        nx = nPoint.x;
-        ny = nPoint.y;
-      }
       nWidth = nx - x;
       nHeight = ny - y;
       if (nWidth <= 1) {
@@ -184,16 +168,9 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
         ec.getActionRemark().transformDirIndex = 1;
         return;
       }
-      hitting.update({ width: nx - x, height: ny - y });
+      hitting.update({ width: nWidth, height: nHeight });
       break;
     case 3:
-      nx = offsetX;
-      ny = offsetY;
-      if (degree !== 0) {
-        nPoint = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree);
-        nx = nPoint.x;
-        ny = nPoint.y;
-      }
       nWidth = x - nx + width;
       nHeight = ny - y;
       if (nWidth <= 1) {
@@ -207,9 +184,6 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
       break;
     case 4:
       // 向上
-      ny = offsetY;
-      if (degree !== 0)
-        ny = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree).y;
       nHeight = y - ny + height;
       if (nHeight <= 1) {
         ec.getActionRemark().transformDirIndex = 6;
@@ -219,9 +193,6 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
       break;
     case 5:
       // 向右拖
-      nx = offsetX;
-      if (degree !== 0)
-        nx = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree).x;
       nWidth = nx - x;
       if (nWidth <= 1) {
         ec.getActionRemark().transformDirIndex = 7;
@@ -230,9 +201,6 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
       hitting.update({ width: nWidth });
       break;
     case 6:
-      ny = offsetY;
-      if (degree !== 0)
-        ny = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree).y;
       nHeight = ny - y;
       if (nHeight <= 1) {
         ec.getActionRemark().transformDirIndex = 4;
@@ -242,9 +210,6 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
       break;
     case 7:
       // 向左
-      nx = offsetX;
-      if (degree !== 0)
-        nx = rotatePoint({ x: offsetX, y: offsetY }, basePoint, -degree).x;
       nWidth = x - nx + width;
       if (nWidth <= 1) {
         ec.getActionRemark().transformDirIndex = 5;
