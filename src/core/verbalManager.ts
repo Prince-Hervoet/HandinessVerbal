@@ -7,6 +7,7 @@ export class VerbalManager {
   private renderCanvas: VerbalCanvas;
   private eventCanvas: VerbalCanvas;
   private eventCenter: EventCenter;
+  private isPlacePending = false;
 
   constructor(
     renderCanvas: VerbalCanvas,

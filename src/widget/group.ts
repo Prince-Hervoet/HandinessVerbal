@@ -1,4 +1,4 @@
-import { rayMethod } from "../util/math";
+import { degreeToRadian, rayMethod, rotatePoint } from "../util/math";
 import { VerbalWidget } from "./verbalWidget";
 
 /**
@@ -11,51 +11,83 @@ export class Group extends VerbalWidget {
   constructor(data: any) {
     super(data);
     this.members = data.members ?? [];
-    this.updateMembersInfo();
+    this.updateMembersCoord();
   }
 
-  private updateMembersInfo() {
+  private updateMembersCoord() {
     this.members.forEach((member: VerbalWidget) => {
       member.set("x", member.get("x") - this.x);
       member.set("y", member.get("y") - this.y);
+      member.set("basePoint", {
+        x: member.get("x") + (member.get("scaleWidth") >> 1),
+        y: member.get("y") + (member.get("scaleHeight") >> 1),
+      });
+      member.set("groupWidget", this);
+      member.set("isEventActive", false);
+    });
+  }
+
+  /**
+   * 组的更新方式 -- 等比
+   * @param data
+   */
+  update(data: any) {
+    this.initData(data);
+    this.calPointsInfo();
+    this.updateTransformer();
+    this.emit("_update_watch_", {
+      target: this,
+      eventType: "_update_watch_",
     });
   }
 
   recoverMembersInfo() {
     this.members.forEach((member: VerbalWidget) => {
-      member.update({
-        x: member.get("x") + this.x,
-        y: member.get("y") + this.y,
+      const nScaleX = this.scaleX * member.get("scaleX");
+      const nScaleY = this.scaleY * member.get("scaleY");
+      const nDegree = this.degree + member.get("degree");
+      const nScaleWidth = member.get("width") * nScaleX;
+      const nScaleHeight = member.get("height") * nScaleY;
+      const mx = member.get("x");
+      const my = member.get("y");
+      const nBasePoint = {
+        x: this.basePoint.x - this.x,
+        y: this.basePoint.y - this.y,
+      };
+      const nPoint1 = rotatePoint({ x: mx, y: my }, nBasePoint, this.degree);
+      const nPoint2 = rotatePoint(
+        { x: mx + nScaleWidth, y: my + nScaleHeight },
+        nBasePoint,
+        this.degree
+      );
+      const middlePoint = {
+        x: (nPoint1.x + nPoint2.x) >> 1,
+        y: (nPoint1.y + nPoint2.y) >> 1,
+      };
+      const nx = (middlePoint.x - (nScaleWidth >> 1)) * this.scaleX + this.x;
+      const ny = (middlePoint.y - (nScaleHeight >> 1)) * this.scaleY + this.y;
+      member.set("groupWidget", null);
+      member.set("isEventActive", true);
+      member.updateNoAmend({
+        x: nx,
+        y: ny,
+        scaleX: nScaleX,
+        scaleY: nScaleY,
+        degree: nDegree,
       });
     });
   }
 
-  /**
-   * 组更新时，需要将组内成员进行相应的更新
-   * @param data
-   */
-  update(data: any): void {
-    const oldX = this.x;
-    const oldY = this.y;
-    this.initData(data);
-    this.calPointsInfo();
-    this.updateTransformer();
-    const nxOffset = this.x - oldX;
-    const nyOffset = this.y - oldY;
-    this.members.forEach((member: VerbalWidget) => {
-      member.updatePosition({
-        x: member.get("x") + nxOffset,
-        y: member.get("y") + nyOffset,
-      });
-    });
+  setCtxGroupTransform(ctx: CanvasRenderingContext2D) {
+    this.transform(ctx);
   }
 
   protected updatePathPoints(): void {
     this.pathPoints = [
       { x: this.x, y: this.y },
-      { x: this.x + this.width, y: this.y },
-      { x: this.x + this.width, y: this.y + this.height },
-      { x: this.x, y: this.y + this.height },
+      { x: this.x + this.scaleWidth, y: this.y },
+      { x: this.x + this.scaleWidth, y: this.y + this.scaleHeight },
+      { x: this.x, y: this.y + this.scaleHeight },
     ];
   }
 

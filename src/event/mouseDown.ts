@@ -39,7 +39,12 @@ function mouseDownCommon(event: MouseEvent, ec: EventCenter) {
 function mouseDownHitting(event: MouseEvent, ec: EventCenter) {
   if (ec.getActionRemark().transformDirIndex !== -1) {
     const hitting = ec.getHitting()!;
-    ec.transferToEventCanvas(hitting);
+    if (EventCenter.isGroup(hitting)) {
+      const widgets = hitting.get("members");
+      ec.transferToEventCanvas(...widgets, hitting);
+    } else {
+      ec.transferToEventCanvas(hitting);
+    }
     ec.setState(StateEnum.TRANSFORM);
     return;
   }

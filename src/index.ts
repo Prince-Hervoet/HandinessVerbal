@@ -3,14 +3,13 @@ import { CanvasImage } from "./widget/canvasImage";
 import { Ellipse } from "./widget/ellipse";
 import { UtilTransformer } from "./widget/utilWidgets/utilTransformer";
 import { HoveringFlag } from "./widget/utilWidgets/hoveringFlag";
-import { Line } from "./widget/line";
 
 const dom = document.getElementById("app")!;
 const canvas = initCanvas(dom, 4000, 2000);
 const rect = canvas.rectangle({
   x: 100,
   y: 200,
-  width: 200,
+  width: 400,
   height: 200,
 
   style: { fill: "red", roughness: 1, seed: 1, fillStyle: "solid" },
@@ -49,20 +48,26 @@ const imgTest = new CanvasImage({
 const ellTest = new Ellipse({
   x: 500,
   y: 300,
-  width: 500,
-  height: 300,
+  width: 100,
+  height: 100,
   style: { fill: "blue", seed: 4, fillStyle: "solid" },
 });
 
-const lineTest = new Line({
-  x1: 100,
-  y1: 100,
-  x2: 300,
-  y2: 300,
-  style: { strokeWidth: 10 },
-});
+const ans = [];
+for (let i = 0; i < 1000; i++) {
+  const rect = canvas.rectangle({
+    x: 100,
+    y: 200,
+    width: 400,
+    height: 200,
+    style: { fill: "red", roughness: 1, seed: 1, fillStyle: "solid" },
+  });
+  ans.push(rect);
+}
 
-canvas.place(rect, ellTest, imgTest);
-console.log(rect.stringify());
+canvas.place(...ans);
+
+// canvas.place(rect, ellTest);
+// console.log(rect.stringify());
 
 // rect.update({ x: 200, y: 200 });

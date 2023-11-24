@@ -1,6 +1,7 @@
 import { Renderer } from "../core/renderer";
 import { SimpleEventData } from "../event/eventCenter";
 import { Point, degreeToRadian, rotatePoint } from "../util/math";
+import { Group } from "./group";
 
 export interface ISimpleEvent {
   on(name: string, handler: Function): void;
@@ -31,6 +32,9 @@ export abstract class VerbalWidget implements ISimpleEvent {
   pathPoints: Point[] = [];
   cornerPoints: Point[][] = [];
 
+  // 是否激活事件检测
+  isEventActive: boolean = true;
+
   // 风格
   style: any = {};
 
@@ -42,6 +46,9 @@ export abstract class VerbalWidget implements ISimpleEvent {
 
   // 事件
   eventObject: any = {};
+
+  // 所属的组部件
+  groupWidget: VerbalWidget | null = null;
 
   constructor(data: any) {
     this.initData(data);
@@ -160,8 +167,8 @@ export abstract class VerbalWidget implements ISimpleEvent {
     this.cornerPoints[5] = [
       { x: this.x + w, y: this.y },
       { x: this.x + w + cornerWidth, y: this.y },
-      { x: this.x + w, y: this.y + h },
       { x: this.x + w + cornerWidth, y: this.y + h },
+      { x: this.x + w, y: this.y + h },
     ];
     this.cornerPoints[6] = [
       { x: this.x, y: this.y + h },
@@ -282,6 +289,22 @@ export abstract class VerbalWidget implements ISimpleEvent {
     });
   }
 
+  updateNoNotify(data: any) {
+    this.initData(data);
+    this.calPointsInfo();
+    this.updateTransformer();
+  }
+
+  updateNoAmend(data: any) {
+    this.initData(data);
+    this.updateBoundingBoxPoints();
+    this.updatePathPoints();
+    this.updateCornerPoints();
+    this.updateBasePoint();
+    this.rotatePoints();
+    this.updateTransformer();
+  }
+
   /**
    * 计算所需的点数组，一般无需子类替换
    */
@@ -312,6 +335,7 @@ export abstract class VerbalWidget implements ISimpleEvent {
     if (this.width === 0 || this.height === 0) return;
     const ctx = renderer.getCanvasCtx();
     ctx.save();
+    if (this.groupWidget) (this.groupWidget as Group).setCtxGroupTransform(ctx);
     this.transform(ctx);
     this._render(renderer);
     ctx.restore();

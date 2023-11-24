@@ -53,8 +53,15 @@ export class VerbalCanvas {
   }
 
   remove(...widgets: VerbalWidget[]) {
-    this.removeWithoutRender(...widgets);
-    this.renderAll();
+    let isNeedRender = false;
+    for (const widget of widgets) {
+      const node = this.widgetToNode.get(widget);
+      if (!node) continue;
+      this.renderList.remove(node);
+      this.widgetToNode.delete(widget);
+      isNeedRender = true;
+    }
+    if (isNeedRender) this.renderAll();
   }
 
   renderAll() {
@@ -80,7 +87,8 @@ export class VerbalCanvas {
     while (cursor !== head) {
       if (cursor.isRender) {
         const widget = cursor.value!;
-        if (widget.isPointOnWidget(x, y)) return widget;
+        if (widget.get("isEventActive"))
+          if (widget.isPointOnWidget(x, y)) return widget;
       }
       cursor = cursor.prev!;
     }
@@ -94,10 +102,11 @@ export class VerbalCanvas {
     let cursor = this.renderList.getHead();
     cursor = cursor.next!;
     while (cursor !== tail) {
-      if (cursor.isRender) {
+      if (cursor.isRender && cursor.isActive) {
         const widget = cursor.value!;
-        if (boxSelectInclusion(box, widget.get("boundingBoxPoints")))
-          ans.push(widget);
+        if (widget.get("isEventActive"))
+          if (boxSelectInclusion(box, widget.get("boundingBoxPoints")))
+            ans.push(widget);
       }
       cursor = cursor.next!;
     }
@@ -109,6 +118,14 @@ export class VerbalCanvas {
       const node = this.widgetToNode.get(widget);
       if (!node) continue;
       node.isRender = isRender;
+    }
+  }
+
+  setIsActive(isActive: boolean, ...widgets: VerbalWidget[]) {
+    for (const widget of widgets) {
+      const node = this.widgetToNode.get(widget);
+      if (!node) continue;
+      node.isActive = isActive;
     }
   }
 
@@ -138,6 +155,7 @@ class RenderNode {
   prev: RenderNode | null = null;
   value: VerbalWidget | null = null;
   isRender: boolean = true;
+  isActive: boolean = true;
 }
 
 class RenderList {

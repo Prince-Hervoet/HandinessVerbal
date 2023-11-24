@@ -28,9 +28,6 @@ function mouseUpCatching(event: MouseEvent, ec: EventCenter) {
   const hitting = ec.getHitting()!;
   if (EventCenter.isGroup(hitting)) {
     const widgets: VerbalWidget[] = hitting.get("members");
-    widgets.forEach((widget) => {
-      widget.calPointsInfo();
-    });
     ec.transferToRenderCanvas(...widgets, hitting);
   } else {
     hitting.calPointsInfo();
@@ -46,7 +43,10 @@ function mouseUpBoxSelect(event: MouseEvent, ec: EventCenter) {
   if (ec.getHitting()) {
     const hitting = ec.getHitting()!;
     removeHittingFlag(ec);
-    if (EventCenter.isGroup(hitting)) ec.getRenderCanvas().remove(hitting);
+    if (EventCenter.isGroup(hitting)) {
+      (hitting as Group).recoverMembersInfo();
+      ec.getRenderCanvas().remove(hitting);
+    }
   }
   ec.setHovering(null);
   ec.setHitting(null);
@@ -81,6 +81,11 @@ function mouseUpBoxSelect(event: MouseEvent, ec: EventCenter) {
 
 function mouseUpTransform(event: MouseEvent, ec: EventCenter) {
   const hitting = ec.getHitting()!;
-  ec.transferToRenderCanvas(hitting);
+  if (EventCenter.isGroup(hitting)) {
+    const widgets = hitting.get("members");
+    ec.transferToRenderCanvas(...widgets, hitting);
+  } else {
+    ec.transferToRenderCanvas(hitting);
+  }
   ec.setState(StateEnum.HITTING);
 }
