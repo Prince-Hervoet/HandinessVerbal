@@ -9,8 +9,8 @@ export class Ellipse extends VerbalWidget {
   }
 
   isPointOnWidget(x: number, y: number): boolean {
-    const widthHalf = this.width >> 1;
-    const heightHalf = this.height >> 1;
+    const widthHalf = this.scaleWidth >> 1;
+    const heightHalf = this.scaleHeight >> 1;
     const nx = x - this.basePoint.x;
     const ny = y - this.basePoint.y;
     return (

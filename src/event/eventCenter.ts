@@ -142,13 +142,13 @@ export class EventCenter {
   }
 
   transferToEventCanvas(...widgets: VerbalWidget[]) {
-    for (const widget of widgets) this.renderCanvas.setIsRender(widget, false);
+    this.renderCanvas.setIsRender(false, ...widgets);
     this.renderCanvas.renderAll();
     this.eventCanvas.place(...widgets);
   }
 
   transferToRenderCanvas(...widgets: VerbalWidget[]) {
-    for (const widget of widgets) this.renderCanvas.setIsRender(widget, true);
+    this.renderCanvas.setIsRender(true, ...widgets);
     this.renderCanvas.renderAll();
     this.eventCanvas.remove(...widgets);
   }

@@ -51,7 +51,7 @@ const ellTest = new Ellipse({
   y: 300,
   width: 500,
   height: 300,
-  style: { fill: "green", seed: 4, fillStyle: "hachure" },
+  style: { fill: "blue", seed: 4, fillStyle: "solid" },
 });
 
 const lineTest = new Line({
@@ -62,7 +62,7 @@ const lineTest = new Line({
   style: { strokeWidth: 10 },
 });
 
-canvas.place(rect);
+canvas.place(rect, ellTest, imgTest);
 console.log(rect.stringify());
 
 // rect.update({ x: 200, y: 200 });

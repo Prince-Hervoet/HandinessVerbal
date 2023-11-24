@@ -38,6 +38,11 @@ export class VerbalCanvas {
     this.renderAll();
   }
 
+  placeAppendTo(widget: VerbalWidget) {
+    this.add(widget);
+    this.renderAll();
+  }
+
   removeWithoutRender(...widgets: VerbalWidget[]) {
     for (const widget of widgets) {
       const node = this.widgetToNode.get(widget);
@@ -99,10 +104,12 @@ export class VerbalCanvas {
     return ans;
   }
 
-  setIsRender(widget: VerbalWidget, isRender: boolean) {
-    const node = this.widgetToNode.get(widget);
-    if (!node) return;
-    node.isRender = isRender;
+  setIsRender(isRender: boolean, ...widgets: VerbalWidget[]) {
+    for (const widget of widgets) {
+      const node = this.widgetToNode.get(widget);
+      if (!node) continue;
+      node.isRender = isRender;
+    }
   }
 
   has(widget: VerbalWidget) {
@@ -150,6 +157,14 @@ class RenderList {
     node.prev = temp;
     node.next = this.tail;
     this.tail.prev = node;
+  }
+
+  appendNodeTo(node: RenderNode, target: RenderNode) {
+    const nextNode = node.next!;
+    target.next = nextNode;
+    nextNode.prev = target;
+    node.next = target;
+    target.prev = node;
   }
 
   remove(node: RenderNode) {

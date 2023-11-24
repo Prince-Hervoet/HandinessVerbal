@@ -11,6 +11,23 @@ export class Group extends VerbalWidget {
   constructor(data: any) {
     super(data);
     this.members = data.members ?? [];
+    this.updateMembersInfo();
+  }
+
+  private updateMembersInfo() {
+    this.members.forEach((member: VerbalWidget) => {
+      member.set("x", member.get("x") - this.x);
+      member.set("y", member.get("y") - this.y);
+    });
+  }
+
+  recoverMembersInfo() {
+    this.members.forEach((member: VerbalWidget) => {
+      member.update({
+        x: member.get("x") + this.x,
+        y: member.get("y") + this.y,
+      });
+    });
   }
 
   /**
