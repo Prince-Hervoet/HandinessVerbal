@@ -27,20 +27,6 @@ export class Group extends VerbalWidget {
     });
   }
 
-  /**
-   * 组的更新方式 -- 等比
-   * @param data
-   */
-  update(data: any) {
-    this.initData(data);
-    this.calPointsInfo();
-    this.updateTransformer();
-    this.emit("_update_watch_", {
-      target: this,
-      eventType: "_update_watch_",
-    });
-  }
-
   recoverMembersInfo() {
     this.members.forEach((member: VerbalWidget) => {
       const nScaleX = this.scaleX * member.get("scaleX");
