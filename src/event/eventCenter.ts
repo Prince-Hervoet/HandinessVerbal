@@ -1,7 +1,7 @@
 import { VerbalCanvas } from "../core/verbalCanvas";
 import { Point } from "../util/math";
 import { BoxSelectRect } from "../widget/utilWidgets/boxSelectRect";
-import { HittingFlag } from "../widget/utilWidgets/utilTransformer";
+import { UtilTransformer } from "../widget/utilWidgets/utilTransformer";
 import { HoveringFlag } from "../widget/utilWidgets/hoveringFlag";
 import { VerbalWidget } from "../widget/verbalWidget";
 import { mouseDownHandler } from "./mouseDown";
@@ -42,7 +42,7 @@ class ActionRemark {
   transformDirIndex: number = -1;
 
   gHoveringFlag: VerbalWidget = new HoveringFlag({});
-  gHittingFlag: VerbalWidget = new HittingFlag({});
+  gHittingFlag: VerbalWidget = new UtilTransformer({});
   gBoxSelectFlag: VerbalWidget = new BoxSelectRect({});
 }
 

@@ -164,3 +164,7 @@ export function calP2pDistance(p1: Point, p2: Point) {
   const c2 = p1.y - p2.y;
   return Math.abs(Math.sqrt(c1 * c1 + c2 * c2));
 }
+
+export function getScaleNumber(origin: number, current: number) {
+  return current / origin;
+}

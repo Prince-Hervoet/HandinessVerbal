@@ -1,7 +1,7 @@
 import { Renderer } from "../../core/renderer";
 import { VerbalWidget } from "../verbalWidget";
 
-export class HittingFlag extends VerbalWidget {
+export class UtilTransformer extends VerbalWidget {
   shapeType: string = "hittingFlag";
   cornerWidth: number = 12;
   cornerHeight: number = 12;
@@ -22,8 +22,8 @@ export class HittingFlag extends VerbalWidget {
     ctx.globalAlpha = this.style.globalAlpha ?? 0.7;
     ctx.lineWidth = this.style.strokeWidth ?? 3;
     ctx.fillStyle = this.style.fill ?? "#3d84a8";
-    const nx = this.x - this.padding;
-    const ny = this.y - this.padding;
+    const nx = -this.padding;
+    const ny = -this.padding;
     const nWidth = this.width + (this.padding << 1);
     const nHeight = this.height + (this.padding << 1);
     const cornerWidthHalf = this.cornerWidth >> 1;

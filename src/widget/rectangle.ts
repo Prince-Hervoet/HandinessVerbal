@@ -15,9 +15,9 @@ export class Rectangle extends VerbalWidget {
   protected updatePathPoints(): void {
     this.pathPoints = [
       { x: this.x, y: this.y },
-      { x: this.x + this.width, y: this.y },
-      { x: this.x + this.width, y: this.y + this.height },
-      { x: this.x, y: this.y + this.height },
+      { x: this.x + this.scaleWidth, y: this.y },
+      { x: this.x + this.scaleWidth, y: this.y + this.scaleHeight },
+      { x: this.x, y: this.y + this.scaleHeight },
     ];
   }
 

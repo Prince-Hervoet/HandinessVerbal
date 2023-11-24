@@ -1,12 +1,12 @@
 import { initCanvas } from "./core/initCanvas";
 import { CanvasImage } from "./widget/canvasImage";
 import { Ellipse } from "./widget/ellipse";
-import { HittingFlag } from "./widget/utilWidgets/utilTransformer";
+import { UtilTransformer } from "./widget/utilWidgets/utilTransformer";
 import { HoveringFlag } from "./widget/utilWidgets/hoveringFlag";
 import { Line } from "./widget/line";
 
 const dom = document.getElementById("app")!;
-const canvas = initCanvas(dom, 1000, 1000);
+const canvas = initCanvas(dom, 4000, 2000);
 const rect = canvas.rectangle({
   x: 100,
   y: 200,
@@ -31,7 +31,7 @@ const hoveringTest = new HoveringFlag({
   height: 200,
 });
 
-const hittingTest = new HittingFlag({
+const hittingTest = new UtilTransformer({
   x: 100,
   y: 200,
   width: 200,
@@ -62,7 +62,7 @@ const lineTest = new Line({
   style: { strokeWidth: 10 },
 });
 
-canvas.place(imgTest, rect);
+canvas.place(rect);
 console.log(rect.stringify());
 
 // rect.update({ x: 200, y: 200 });

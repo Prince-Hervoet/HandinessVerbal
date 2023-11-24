@@ -3,8 +3,9 @@ import { EventCenter } from "./eventCenter";
 
 export function placeHoveringFlag(widget: VerbalWidget, ec: EventCenter) {
   const hoveringFlag = ec.getActionRemark().gHoveringFlag;
-  const { x, y, width, height, degree } = widget.getBoundingBoxInfo();
-  hoveringFlag.update({ x, y, width, height, degree });
+  const { x, y, width, height, degree, scaleWidth, scaleHeight } =
+    widget.getBoundingBoxInfo();
+  hoveringFlag.update({ x, y, width: scaleWidth, height: scaleHeight, degree });
   ec.getEventCanvas().place(hoveringFlag);
 }
 
@@ -15,8 +16,9 @@ export function removeHoveringFlag(ec: EventCenter) {
 
 export function placeHittingFlag(widget: VerbalWidget, ec: EventCenter) {
   const hittingFlag = ec.getActionRemark().gHittingFlag;
-  const { x, y, width, height, degree } = widget.getBoundingBoxInfo();
-  hittingFlag.update({ x, y, width, height, degree });
+  const { x, y, width, height, degree, scaleWidth, scaleHeight } =
+    widget.getBoundingBoxInfo();
+  hittingFlag.update({ x, y, width: scaleWidth, height: scaleHeight, degree });
   widget.set("transformer", hittingFlag);
   ec.getEventCanvas().place(hittingFlag);
 }

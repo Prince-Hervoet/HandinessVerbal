@@ -17,8 +17,14 @@ export abstract class VerbalWidget implements ISimpleEvent {
   y: number = 0;
   width: number = 0;
   height: number = 0;
+  scaleWidth: number = 0;
+  scaleHeight: number = 0;
   basePoint: Point = { x: 0, y: 0 };
+
+  // 变换信息
   degree: number = 0;
+  scaleX: number = 1;
+  scaleY: number = 1;
 
   // 点数组
   boundingBoxPoints: Point[] = [];
@@ -39,10 +45,7 @@ export abstract class VerbalWidget implements ISimpleEvent {
 
   constructor(data: any) {
     this.initData(data);
-    this.updateBoundingBoxPoints();
-    this.updateBasePoint();
-    this.updateCornerPoints();
-    this.updatePathPoints();
+    this.calPointsInfo();
     this.updateTransformer();
   }
 
@@ -77,6 +80,15 @@ export abstract class VerbalWidget implements ISimpleEvent {
     for (const key of keys) {
       self[key] = data[key] ?? self[key];
     }
+    this.updateWidthAndHeight();
+  }
+
+  /**
+   * 默认实现，无需子类替换
+   */
+  protected updateWidthAndHeight() {
+    this.scaleWidth = this.getScaleWidth();
+    this.scaleHeight = this.getScaleHeight();
   }
 
   /**
@@ -88,8 +100,8 @@ export abstract class VerbalWidget implements ISimpleEvent {
     this.transformer.update({
       x: this.x,
       y: this.y,
-      width: this.width,
-      height: this.height,
+      width: this.scaleWidth,
+      height: this.scaleHeight,
       degree: this.degree,
     });
   }
@@ -100,9 +112,9 @@ export abstract class VerbalWidget implements ISimpleEvent {
   protected updateBoundingBoxPoints() {
     this.boundingBoxPoints = [
       { x: this.x, y: this.y },
-      { x: this.x + this.width, y: this.y },
-      { x: this.x + this.width, y: this.y + this.height },
-      { x: this.x, y: this.y + this.height },
+      { x: this.x + this.scaleWidth, y: this.y },
+      { x: this.x + this.scaleWidth, y: this.y + this.scaleHeight },
+      { x: this.x, y: this.y + this.scaleHeight },
     ];
   }
 
@@ -117,8 +129,10 @@ export abstract class VerbalWidget implements ISimpleEvent {
     const cornerHeightHalf = cornerHeight >> 1;
     const nx = this.x - padding;
     const ny = this.y - padding;
-    const nWidth = this.width + (padding << 1);
-    const nHeight = this.height + (padding << 1);
+    const nWidth = this.scaleWidth + (padding << 1);
+    const nHeight = this.scaleHeight + (padding << 1);
+    const w = this.scaleWidth;
+    const h = this.scaleHeight;
     // 四个角
     const dirs = [
       [0, 0],
@@ -136,45 +150,47 @@ export abstract class VerbalWidget implements ISimpleEvent {
         { x: sx, y: sy + cornerHeight },
       ];
     }
+    // 四条边
     this.cornerPoints[4] = [
       { x: this.x, y: this.y - cornerHeight },
-      { x: this.x + this.width, y: this.y - cornerHeight },
+      { x: this.x + w, y: this.y - cornerHeight },
       { x: this.x, y: this.y },
-      { x: this.x + this.width, y: this.y },
+      { x: this.x + w, y: this.y },
     ];
     this.cornerPoints[5] = [
-      { x: this.x + this.width, y: this.y },
-      { x: this.x + this.width + cornerWidth, y: this.y },
-      { x: this.x + this.width, y: this.y + this.height },
-      { x: this.x + this.width + cornerWidth, y: this.y + this.height },
+      { x: this.x + w, y: this.y },
+      { x: this.x + w + cornerWidth, y: this.y },
+      { x: this.x + w, y: this.y + h },
+      { x: this.x + w + cornerWidth, y: this.y + h },
     ];
     this.cornerPoints[6] = [
-      { x: this.x, y: this.y + this.height },
-      { x: this.x + this.width, y: this.y + this.height },
-      { x: this.x, y: this.y + this.height + cornerHeight },
-      { x: this.x + this.width, y: this.y + this.height + cornerHeight },
+      { x: this.x, y: this.y + h },
+      { x: this.x + w, y: this.y + h },
+      { x: this.x, y: this.y + h + cornerHeight },
+      { x: this.x + w, y: this.y + h + cornerHeight },
     ];
     this.cornerPoints[7] = [
       { x: this.x - cornerWidth, y: this.y },
       { x: this.x, y: this.y },
-      { x: this.x, y: this.y + this.height },
-      { x: this.x - cornerWidth, y: this.y + this.height },
+      { x: this.x, y: this.y + h },
+      { x: this.x - cornerWidth, y: this.y + h },
     ];
+    // 旋转角
     this.cornerPoints[8] = [
       {
-        x: this.x + (this.width >> 1) - cornerWidthHalf,
+        x: this.x + (w >> 1) - cornerWidthHalf,
         y: ny - 20 - cornerHeightHalf,
       },
       {
-        x: this.x + (this.width >> 1) + cornerWidthHalf,
+        x: this.x + (w >> 1) + cornerWidthHalf,
         y: ny - 20 - cornerHeightHalf,
       },
       {
-        x: this.x + (this.width >> 1) + cornerWidthHalf,
+        x: this.x + (w >> 1) + cornerWidthHalf,
         y: ny - 20 + cornerHeightHalf,
       },
       {
-        x: this.x + (this.width >> 1) - cornerWidthHalf,
+        x: this.x + (w >> 1) - cornerWidthHalf,
         y: ny - 20 + cornerHeightHalf,
       },
     ];
@@ -184,8 +200,8 @@ export abstract class VerbalWidget implements ISimpleEvent {
    * 默认实现，无需子类替换
    */
   protected updateBasePoint() {
-    this.basePoint.x = this.x + (this.width >> 1);
-    this.basePoint.y = this.y + (this.height >> 1);
+    this.basePoint.x = this.x + (this.scaleWidth >> 1);
+    this.basePoint.y = this.y + (this.scaleHeight >> 1);
   }
 
   /**
@@ -194,14 +210,14 @@ export abstract class VerbalWidget implements ISimpleEvent {
   protected amendBasePoint() {
     const nPoint = rotatePoint(
       {
-        x: this.x + (this.width >> 1),
-        y: this.y + (this.height >> 1),
+        x: this.x + (this.scaleWidth >> 1),
+        y: this.y + (this.scaleHeight >> 1),
       },
       this.basePoint,
       this.degree
     );
-    this.x = nPoint.x - (this.width >> 1);
-    this.y = nPoint.y - (this.height >> 1);
+    this.x = nPoint.x - (this.scaleWidth >> 1);
+    this.y = nPoint.y - (this.scaleHeight >> 1);
   }
 
   /**
@@ -210,10 +226,13 @@ export abstract class VerbalWidget implements ISimpleEvent {
    * @returns
    */
   protected transform(ctx: CanvasRenderingContext2D) {
-    if (this.degree === 0) return;
-    ctx.translate(this.basePoint.x, this.basePoint.y);
-    ctx.rotate(degreeToRadian(this.degree));
-    ctx.translate(-this.basePoint.x, -this.basePoint.y);
+    if (this.degree !== 0) {
+      ctx.translate(this.basePoint.x, this.basePoint.y);
+      ctx.rotate(degreeToRadian(this.degree));
+      ctx.translate(-this.basePoint.x, -this.basePoint.y);
+    }
+    ctx.translate(this.x, this.y);
+    ctx.scale(this.scaleX, this.scaleY);
   }
 
   /**
@@ -280,7 +299,7 @@ export abstract class VerbalWidget implements ISimpleEvent {
    * @param data
    */
   updatePosition(data: any) {
-    this.initData(data);
+    this.initData({ x: data.x, y: data.y });
     this.updateBasePoint();
     this.updateTransformer();
     this.emit("_update_watch_", {
@@ -309,6 +328,10 @@ export abstract class VerbalWidget implements ISimpleEvent {
       y: this.y,
       width: this.width,
       height: this.height,
+      scaleX: this.scaleX,
+      scaleY: this.scaleY,
+      scaleWidth: this.scaleWidth,
+      scaleHeight: this.scaleHeight,
       degree: this.degree,
     };
   }
@@ -353,5 +376,13 @@ export abstract class VerbalWidget implements ISimpleEvent {
 
   delete(name: string): void {
     this.eventObject[name] = [];
+  }
+
+  getScaleWidth() {
+    return this.width * this.scaleX;
+  }
+
+  getScaleHeight() {
+    return this.height * this.scaleY;
   }
 }

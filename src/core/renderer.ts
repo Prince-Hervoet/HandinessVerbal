@@ -28,8 +28,8 @@ export class RoughCanvasRenderer implements Renderer {
     switch (type) {
       case "rectangle":
         this.rc.rectangle(
-          widget.get("x"),
-          widget.get("y"),
+          0,
+          0,
           widget.get("width"),
           widget.get("height"),
           widget.get("style")
@@ -38,8 +38,8 @@ export class RoughCanvasRenderer implements Renderer {
       case "ellipse":
         const basePoint: Point = widget.get("basePoint");
         this.rc.ellipse(
-          basePoint.x,
-          basePoint.y,
+          widget.get("width") >> 1,
+          widget.get("height") >> 1,
           widget.get("width"),
           widget.get("height"),
           widget.get("style")

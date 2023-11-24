@@ -8,6 +8,6 @@ export class BoxSelectRect extends VerbalWidget {
     const ctx = renderer.getCanvasCtx();
     ctx.fillStyle = this.style.fill ?? "#46cdcf";
     ctx.globalAlpha = this.style.globalAlpha ?? 0.3;
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    ctx.fillRect(0, 0, this.width, this.height);
   }
 }

@@ -18,8 +18,8 @@ export class HoveringFlag extends VerbalWidget {
     ctx.strokeStyle = this.style.stroke ?? "#46cdcf";
     ctx.lineWidth = this.style.strokeWidth ?? 3;
     ctx.strokeRect(
-      this.x - ctx.lineWidth,
-      this.y - ctx.lineWidth,
+      -ctx.lineWidth,
+      -ctx.lineWidth,
       this.width + (ctx.lineWidth << 1),
       this.height + (ctx.lineWidth << 1)
     );
