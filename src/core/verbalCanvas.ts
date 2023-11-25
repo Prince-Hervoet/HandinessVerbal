@@ -38,11 +38,6 @@ export class VerbalCanvas {
     this.renderAll();
   }
 
-  placeAppendTo(widget: VerbalWidget) {
-    this.add(widget);
-    this.renderAll();
-  }
-
   removeWithoutRender(...widgets: VerbalWidget[]) {
     for (const widget of widgets) {
       const node = this.widgetToNode.get(widget);
@@ -113,6 +108,36 @@ export class VerbalCanvas {
     return ans;
   }
 
+  levelGoUp(widget: VerbalWidget) {
+    const node = this.widgetToNode.get(widget);
+    if (!node) return;
+    if (node.next === this.renderList.getTail()) return;
+    const prevNode = node.prev!;
+    const nextNode = node.next!;
+    const temp = nextNode.next!;
+    node.next = temp;
+    temp.prev = node;
+    prevNode.next = nextNode;
+    nextNode.prev = prevNode;
+    nextNode.next = node;
+    node.prev = nextNode;
+  }
+
+  levelGoDown(widget: VerbalWidget) {
+    const node = this.widgetToNode.get(widget);
+    if (!node) return;
+    if (node.prev === this.renderList.getHead()) return;
+    const prevNode = node.prev!;
+    const nextNode = node.next!;
+    const temp = prevNode.prev!;
+    temp.next = node;
+    node.prev = temp;
+    node.next = prevNode;
+    prevNode.prev = node;
+    prevNode.next = nextNode;
+    nextNode.prev = prevNode;
+  }
+
   setIsRender(isRender: boolean, ...widgets: VerbalWidget[]) {
     for (const widget of widgets) {
       const node = this.widgetToNode.get(widget);
@@ -175,14 +200,6 @@ class RenderList {
     node.prev = temp;
     node.next = this.tail;
     this.tail.prev = node;
-  }
-
-  appendNodeTo(node: RenderNode, target: RenderNode) {
-    const nextNode = node.next!;
-    target.next = nextNode;
-    nextNode.prev = target;
-    node.next = target;
-    target.prev = node;
   }
 
   remove(node: RenderNode) {

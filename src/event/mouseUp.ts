@@ -16,8 +16,6 @@ export function mouseUpHandler(event: MouseEvent, ec: EventCenter) {
     case StateEnum.BOXSELECT:
       mouseUpBoxSelect(event, ec);
       break;
-    case StateEnum.DRAGGING:
-      break;
     case StateEnum.TRANSFORM:
       mouseUpTransform(event, ec);
       break;

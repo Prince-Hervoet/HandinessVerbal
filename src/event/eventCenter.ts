@@ -16,12 +16,13 @@ export interface SimpleEventData {
 }
 
 export const StateEnum = {
-  COMMON: 0,
-  HITTING: 1,
-  CATCHING: 2,
-  DRAGGING: 3,
-  BOXSELECT: 4,
-  TRANSFORM: 5,
+  COMMON: 0, // 无事发生
+  HITTING: 1, // 选中
+  CATCHING: 2, // 抓取
+  BOXSELECT: 3, // 框选
+  TRANSFORM: 4, // 变换
+
+  FREEDRAW: 10, // 自由绘画
 };
 
 export const TransformDirsEnum = [
@@ -36,6 +37,9 @@ export const TransformDirsEnum = [
   "grabbing",
 ];
 
+/**
+ * 行为记录类
+ */
 class ActionRemark {
   mouseDownPoint: Point = { x: 0, y: 0 };
   mouseDownOffset: Point = { x: 0, y: 0 };
@@ -46,6 +50,10 @@ class ActionRemark {
   gBoxSelectFlag: VerbalWidget = new BoxSelectRect({});
 }
 
+class ActionConfig {
+  isBoxSelect: boolean = true;
+}
+
 export class EventCenter {
   private targetDom: HTMLElement;
   private renderCanvas: VerbalCanvas;
@@ -53,6 +61,7 @@ export class EventCenter {
   private hovering: VerbalWidgetType = null;
   private hitting: VerbalWidgetType = null;
   private actionRemark: ActionRemark;
+  private actionConfig: ActionConfig;
   private state: number = StateEnum.COMMON;
   private isPendingUpdate: boolean = false;
 
@@ -65,6 +74,7 @@ export class EventCenter {
     this.renderCanvas = renderCanvas;
     this.eventCanvas = eventCanvas;
     this.actionRemark = new ActionRemark();
+    this.actionConfig = new ActionConfig();
     this.bindEventHandler();
   }
 
@@ -139,6 +149,10 @@ export class EventCenter {
 
   getActionRemark() {
     return this.actionRemark;
+  }
+
+  getActionConfig() {
+    return this.actionConfig;
   }
 
   transferToEventCanvas(...widgets: VerbalWidget[]) {

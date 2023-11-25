@@ -7,7 +7,6 @@ export class VerbalManager {
   private renderCanvas: VerbalCanvas;
   private eventCanvas: VerbalCanvas;
   private eventCenter: EventCenter;
-  private isPlacePending = false;
 
   constructor(
     renderCanvas: VerbalCanvas,
@@ -31,9 +30,26 @@ export class VerbalManager {
     this.renderCanvas.add(...widgets);
   }
 
-  remove() {}
+  remove(...widgets: VerbalWidget[]) {
+    this.renderCanvas.remove(...widgets);
+    this.eventCanvas.remove(...widgets);
+  }
 
-  size() {}
+  size() {
+    return this.renderCanvas.size();
+  }
+
+  setIsBoxSelect(isBoxSelect: boolean) {
+    this.eventCenter.getActionConfig().isBoxSelect = isBoxSelect;
+  }
+
+  getRenderCanvas() {
+    return this.renderCanvas;
+  }
+
+  getEventCanvas() {
+    return this.eventCanvas;
+  }
 
   rectangle(data: any) {
     return new Rectangle(data);

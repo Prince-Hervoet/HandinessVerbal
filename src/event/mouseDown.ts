@@ -31,8 +31,10 @@ function mouseDownCommon(event: MouseEvent, ec: EventCenter) {
     ec.transferToEventCanvas(hovering);
     ec.setState(StateEnum.CATCHING);
   } else {
-    ec.getActionRemark().mouseDownPoint = { x: offsetX, y: offsetY };
-    ec.setState(StateEnum.BOXSELECT);
+    if (ec.getActionConfig().isBoxSelect) {
+      ec.getActionRemark().mouseDownPoint = { x: offsetX, y: offsetY };
+      ec.setState(StateEnum.BOXSELECT);
+    }
   }
 }
 
@@ -70,7 +72,9 @@ function mouseDownHitting(event: MouseEvent, ec: EventCenter) {
     }
     ec.setState(StateEnum.CATCHING);
   } else {
-    ec.getActionRemark().mouseDownPoint = { x: offsetX, y: offsetY };
-    ec.setState(StateEnum.BOXSELECT);
+    if (ec.getActionConfig().isBoxSelect) {
+      ec.getActionRemark().mouseDownPoint = { x: offsetX, y: offsetY };
+      ec.setState(StateEnum.BOXSELECT);
+    }
   }
 }

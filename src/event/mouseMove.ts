@@ -31,8 +31,6 @@ export function mouseMoveHandler(event: MouseEvent, ec: EventCenter) {
     case StateEnum.CATCHING:
       mouseMoveCatching(event, ec);
       break;
-    case StateEnum.DRAGGING:
-      break;
     case StateEnum.TRANSFORM:
       mouseMoveTransform(event, ec);
       break;

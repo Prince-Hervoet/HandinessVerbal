@@ -5,7 +5,7 @@ import { UtilTransformer } from "./widget/utilWidgets/utilTransformer";
 import { HoveringFlag } from "./widget/utilWidgets/hoveringFlag";
 
 const dom = document.getElementById("app")!;
-const canvas = initCanvas(dom, 4000, 2000);
+const canvas = initCanvas(dom, 4000, 2000, { "background-color": "#eee" });
 const rect = canvas.rectangle({
   x: 100,
   y: 200,
@@ -58,7 +58,7 @@ for (let i = 0; i < 2; i++) {
   const rect = canvas.rectangle({
     x: 100,
     y: 200,
-    width: 400,
+    width: 200,
     height: 200,
     style: { fill: "red", roughness: 1, seed: 1, fillStyle: "solid" },
   });
@@ -67,7 +67,7 @@ for (let i = 0; i < 2; i++) {
 
 canvas.place(...ans);
 
-canvas.place(rect, ellTest);
+// canvas.place(rect);
 // console.log(rect.stringify());
 
 // rect.update({ x: 200, y: 200 });

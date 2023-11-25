@@ -7,7 +7,8 @@ import { VerbalManager } from "./verbalManager";
 export function initCanvas(
   container: HTMLElement,
   width: number,
-  height: number
+  height: number,
+  style?: any
 ) {
   const renderCanvasDom = document.createElement("canvas");
   const eventCanvasDom = document.createElement("canvas");
@@ -29,9 +30,16 @@ export function initCanvas(
     `position: relative; width: ${width}px; height: ${height}px;`
   );
 
+  let styleStr = "";
+  if (style && typeof style === "object") {
+    const keys: string[] = Object.keys(style);
+    keys.forEach((key: string) => {
+      styleStr += `${key}: ${style[key]};`;
+    });
+  }
   renderCanvasDom.setAttribute("width", width + "");
   renderCanvasDom.setAttribute("height", height + "");
-  renderCanvasDom.setAttribute("style", "background-color: #eee;");
+  renderCanvasDom.setAttribute("style", styleStr);
   eventCanvasDom.setAttribute("width", width + "");
   eventCanvasDom.setAttribute("height", height + "");
   eventCanvasDom.setAttribute("style", `position: absolute; left: 0; top: 0;`);
