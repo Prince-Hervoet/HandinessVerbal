@@ -54,7 +54,7 @@ const ellTest = new Ellipse({
 });
 
 const ans = [];
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 2; i++) {
   const rect = canvas.rectangle({
     x: 100,
     y: 200,
@@ -67,7 +67,7 @@ for (let i = 0; i < 1000; i++) {
 
 canvas.place(...ans);
 
-// canvas.place(rect, ellTest);
+canvas.place(rect, ellTest);
 // console.log(rect.stringify());
 
 // rect.update({ x: 200, y: 200 });

@@ -1,8 +1,8 @@
 import { Renderer } from "../../core/renderer";
 import { VerbalWidget } from "../verbalWidget";
 
-export class UtilTransformer extends VerbalWidget {
-  shapeType: string = "hittingFlag";
+export class GroupTransformer extends VerbalWidget {
+  shapeType: string = "groupTransformer";
   cornerWidth: number = 12;
   cornerHeight: number = 12;
   padding: number = 6;
@@ -21,7 +21,7 @@ export class UtilTransformer extends VerbalWidget {
     ctx.strokeStyle = this.style.stroke ?? "#009688";
     ctx.globalAlpha = this.style.globalAlpha ?? 0.7;
     ctx.lineWidth = this.style.strokeWidth ?? 3;
-    ctx.fillStyle = this.style.fill ?? "#1976D2";
+    ctx.fillStyle = this.style.fill ?? "#0288D1";
     const nx = -this.padding;
     const ny = -this.padding;
     const nWidth = this.width + (this.padding << 1);
