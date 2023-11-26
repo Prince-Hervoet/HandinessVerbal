@@ -12,16 +12,7 @@ export class Rectangle extends VerbalWidget {
     renderer.render(this);
   }
 
-  protected updatePathPoints(): void {
-    this.pathPoints = [
-      { x: this.x, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y + this.scaleHeight },
-      { x: this.x, y: this.y + this.scaleHeight },
-    ];
-  }
-
   isPointOnWidget(x: number, y: number): boolean {
-    return rayMethod({ x, y }, this.pathPoints);
+    return rayMethod({ x, y }, this.boundingBoxPoints);
   }
 }

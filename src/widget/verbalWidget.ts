@@ -379,6 +379,8 @@ export abstract class VerbalWidget implements ISimpleEvent {
       y: this.y,
       width: this.width,
       height: this.height,
+      scaleX: this.scaleX,
+      scaleY: this.scaleY,
       degree: this.degree,
       basePoint: this.basePoint,
       shapeType: this.shapeType,

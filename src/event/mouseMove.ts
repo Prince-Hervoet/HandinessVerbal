@@ -1,14 +1,5 @@
-import {
-  Point,
-  Vector2,
-  calBoxSelectInfo,
-  calVectorAngle,
-  degreeToRadian,
-  getScaleNumber,
-  rayMethod,
-  rotatePoint,
-} from "../util/math";
-import { EventCenter, StateEnum, TransformDirsEnum } from "./eventCenter";
+import { calBoxSelectInfo } from "../util/math";
+import { EventCenter, StateEnum } from "./eventCenter";
 import {
   placeBoxSelectFlag,
   placeHoveringFlag,
