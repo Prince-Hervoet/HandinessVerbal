@@ -1,5 +1,4 @@
 import { Renderer } from "../core/renderer";
-import { rayMethod } from "../util/math";
 import { VerbalWidget } from "./verbalWidget";
 
 /**
@@ -10,9 +9,5 @@ export class Rectangle extends VerbalWidget {
 
   protected _render(renderer: Renderer): void {
     renderer.render(this);
-  }
-
-  isPointOnWidget(x: number, y: number): boolean {
-    return rayMethod({ x, y }, this.boundingBoxPoints);
   }
 }

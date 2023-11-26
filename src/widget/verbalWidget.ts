@@ -68,16 +68,6 @@ export abstract class VerbalWidget implements ISimpleEvent {
   protected updatePathPoints() {}
 
   /**
-   * 等待子类实现，例如⚪就是特殊的判断方式
-   * @param x
-   * @param y
-   * @returns
-   */
-  isPointOnWidget(x: number, y: number): boolean {
-    return false;
-  }
-
-  /**
    * 默认实现，无需子类替换
    * @param data
    */
@@ -371,6 +361,16 @@ export abstract class VerbalWidget implements ISimpleEvent {
       if (rayMethod(targetPoint, this.cornerPoints[i])) return i;
     }
     return -1;
+  }
+
+  /**
+   * 默认判断包围盒，可能需要替换
+   * @param x
+   * @param y
+   * @returns
+   */
+  isPointOnWidget(x: number, y: number): boolean {
+    return rayMethod({ x, y }, this.boundingBoxPoints);
   }
 
   stringify() {
