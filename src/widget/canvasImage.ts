@@ -37,17 +37,4 @@ export class CanvasImage extends VerbalWidget {
       this.imageCache = image;
     };
   }
-
-  protected updatePathPoints(): void {
-    this.pathPoints = [
-      { x: this.x, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y + this.scaleHeight },
-      { x: this.x, y: this.y + this.height },
-    ];
-  }
-
-  isPointOnWidget(x: number, y: number): boolean {
-    return rayMethod({ x, y }, this.pathPoints);
-  }
 }

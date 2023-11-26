@@ -36,7 +36,6 @@ export class RoughCanvasRenderer implements Renderer {
         );
         break;
       case "ellipse":
-        const basePoint: Point = widget.get("basePoint");
         this.rc.ellipse(
           widget.get("width") >> 1,
           widget.get("height") >> 1,

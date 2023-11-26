@@ -373,6 +373,8 @@ export abstract class VerbalWidget implements ISimpleEvent {
     return rayMethod({ x, y }, this.boundingBoxPoints);
   }
 
+  setCoord() {}
+
   stringify() {
     return JSON.stringify({
       x: this.x,
