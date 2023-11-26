@@ -40,21 +40,26 @@ export class Group extends VerbalWidget {
         x: this.basePoint.x - this.x,
         y: this.basePoint.y - this.y,
       };
-      const nPoint1 = rotatePoint({ x: mx, y: my }, nBasePoint, this.degree);
-      const nPoint2 = rotatePoint(
-        { x: mx + nScaleWidth, y: my + nScaleHeight },
+      const oldMemberBasePoint = {
+        x: mx + (nScaleWidth >> 1),
+        y: my + (nScaleHeight >> 1),
+      };
+      const nMemberBasePoint = rotatePoint(
+        oldMemberBasePoint,
         nBasePoint,
         this.degree
       );
-      const middlePoint = {
-        x: (nPoint1.x + nPoint2.x) >> 1,
-        y: (nPoint1.y + nPoint2.y) >> 1,
-      };
-      const nx = (middlePoint.x - (nScaleWidth >> 1)) * this.scaleX + this.x;
-      const ny = (middlePoint.y - (nScaleHeight >> 1)) * this.scaleY + this.y;
+      const nx =
+        (nMemberBasePoint.x - (nScaleWidth >> 1)) * this.scaleX + this.x;
+      const ny =
+        (nMemberBasePoint.y - (nScaleHeight >> 1)) * this.scaleY + this.y;
       member.set("groupWidget", null);
+      member.set("basePoint", {
+        x: nx + (nScaleWidth >> 1),
+        y: ny + (nScaleHeight >> 1),
+      });
       member.set("isEventActive", true);
-      member.updateNoAmend({
+      member.updateNoNotify({
         x: nx,
         y: ny,
         scaleX: nScaleX,

@@ -48,7 +48,7 @@ const imgTest = new CanvasImage({
 const ellTest = new Ellipse({
   x: 500,
   y: 300,
-  width: 100,
+  width: 400,
   height: 100,
   style: { fill: "blue", seed: 4, fillStyle: "solid" },
 });
@@ -65,7 +65,7 @@ for (let i = 0; i < 2; i++) {
   ans.push(rect);
 }
 
-canvas.place(...ans);
+canvas.place(...ans, ellTest);
 
 // canvas.place(rect);
 // console.log(rect.stringify());

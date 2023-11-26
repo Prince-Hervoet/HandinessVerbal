@@ -65,7 +65,7 @@ function mouseUpBoxSelect(event: MouseEvent, ec: EventCenter) {
     for (const widget of widgets)
       boudingBoxPointsArr.push(widget.get("boundingBoxPoints"));
     const { x, y, width, height } = calMultiPointsInfo(boudingBoxPointsArr);
-    // 创建临时组，并将框选到的部件加入这个组，然后关闭自身的渲染
+    // 创建临时组，并将框选到的部件加入这个组
     const tempGroup = new Group({ x, y, width, height, members: widgets });
     EventCenter.bindUpdateWatchEvent(tempGroup, ec);
     ec.setHitting(tempGroup);
