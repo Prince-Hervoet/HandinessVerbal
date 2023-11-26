@@ -1,6 +1,6 @@
 import { Renderer } from "../core/renderer";
 import { SimpleEventData } from "../event/eventCenter";
-import { Point, degreeToRadian, rotatePoint } from "../util/math";
+import { Point, degreeToRadian, rayMethod, rotatePoint } from "../util/math";
 import { Group } from "./group";
 
 export interface ISimpleEvent {
@@ -365,8 +365,12 @@ export abstract class VerbalWidget implements ISimpleEvent {
     self[key] = value;
   }
 
-  isPointOnCorner(x: number, y: number): boolean {
-    return false;
+  isPointOnCorner(x: number, y: number): number {
+    const targetPoint = { x, y };
+    for (let i = 0; i < this.cornerPoints.length; ++i) {
+      if (rayMethod(targetPoint, this.cornerPoints[i])) return i;
+    }
+    return -1;
   }
 
   stringify() {

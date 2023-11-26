@@ -65,23 +65,17 @@ function mouseMoveBoxSelect(event: MouseEvent, ec: EventCenter) {
 function mouseMoveHitting(event: MouseEvent, ec: EventCenter) {
   const { offsetX, offsetY } = event;
   const widget = ec.getRenderCanvas().lookupPointOnWidget(offsetX, offsetY);
+  const hitting = ec.getHitting()!;
   const dom = ec.getTargetDom();
   const oldStyle: string = dom.getAttribute("oldStyle")!;
-  const cornerPoints: Point[][] = ec.getHitting()!.get("cornerPoints");
-  const targetPoint = { x: offsetX, y: offsetY };
-  let isOnTransformer = false;
-  for (let i = 0; i < cornerPoints.length; ++i) {
-    if (rayMethod(targetPoint, cornerPoints[i])) {
-      ec.getActionRemark().transformDirIndex = i;
-      dom.setAttribute("style", oldStyle + `cursor: cell;`);
-      isOnTransformer = true;
-      break;
-    }
+  const index = hitting.isPointOnCorner(offsetX, offsetY);
+  ec.getActionRemark().transformDirIndex = index;
+  if (index !== -1) {
+    dom.setAttribute("style", oldStyle + `cursor: cell;`);
+    return;
   }
-  if (isOnTransformer) return;
-  dom.setAttribute("style", oldStyle);
-  ec.getActionRemark().transformDirIndex = -1;
 
+  dom.setAttribute("style", oldStyle);
   if (widget) {
     ec.setHovering(widget);
     removeHoveringFlag(ec);
