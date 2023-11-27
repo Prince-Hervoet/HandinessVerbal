@@ -53,6 +53,27 @@ export class RoughCanvasRenderer implements Renderer {
           widget.get("style")
         );
         break;
+      case "triangle":
+        this.rc.polygon(
+          [
+            [widget.get("scaleWidth") >> 1, 0],
+            [0, widget.get("scaleHeight")],
+            [widget.get("scaleWidth"), widget.get("scaleHeight")],
+          ],
+          widget.get("style")
+        );
+        break;
+      case "rhombus":
+        this.rc.polygon(
+          [
+            [widget.get("scaleWidth") >> 1, 0],
+            [widget.get("scaleWidth"), widget.get("scaleHeight") >> 1],
+            [widget.get("scaleWidth") >> 1, widget.get("scaleHeight")],
+            [0, widget.get("scaleHeight") >> 1],
+          ],
+          widget.get("style")
+        );
+        break;
     }
   }
 

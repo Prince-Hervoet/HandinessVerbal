@@ -207,18 +207,19 @@ export abstract class VerbalWidget implements ISimpleEvent {
    * 修正中心点，默认实现，无需子类替换
    */
   protected amendBasePoint(data: any) {
-    if (this.degree !== 0 && (data.scaleX || data.scaleY)) {
-      const nPoint = rotatePoint(
-        {
-          x: this.x + (this.scaleWidth >> 1),
-          y: this.y + (this.scaleHeight >> 1),
-        },
-        this.basePoint,
-        this.degree
-      );
-      this.x = nPoint.x - (this.scaleWidth >> 1);
-      this.y = nPoint.y - (this.scaleHeight >> 1);
-    }
+    // 这里理论上可以优化
+    // 这里的作用是：如果只是单纯的移动就不要修正，否则会出现中心点抖动
+    if (this.degree === 0 || (!data.scaleX && !data.scaleY)) return;
+    const nPoint = rotatePoint(
+      {
+        x: this.x + (this.scaleWidth >> 1),
+        y: this.y + (this.scaleHeight >> 1),
+      },
+      this.basePoint,
+      this.degree
+    );
+    this.x = nPoint.x - (this.scaleWidth >> 1);
+    this.y = nPoint.y - (this.scaleHeight >> 1);
   }
 
   /**
@@ -326,7 +327,6 @@ export abstract class VerbalWidget implements ISimpleEvent {
   }
 
   render(renderer: Renderer) {
-    if (this.width === 0 || this.height === 0) return;
     const ctx = renderer.getCanvasCtx();
     ctx.save();
     if (this.groupWidget) (this.groupWidget as Group).setCtxGroupTransform(ctx);

@@ -15,6 +15,7 @@ export class CanvasImage extends VerbalWidget {
   update(data: any) {
     const oldSrc = this.src;
     this.initData(data);
+    this.amendBasePoint(data);
     this.calPointsInfo();
     this.updateTransformer();
     if (data.src && data.src !== oldSrc) this.imageCache = null;
@@ -27,13 +28,13 @@ export class CanvasImage extends VerbalWidget {
   protected _render(renderer: Renderer): void {
     const ctx = renderer.getCanvasCtx();
     if (this.imageCache) {
-      ctx.drawImage(this.imageCache, 0, 0, this.width, this.height);
+      ctx.drawImage(this.imageCache, 0, 0, this.scaleWidth, this.scaleHeight);
       return;
     }
     const image = new Image();
     image.src = this.src;
     image.onload = () => {
-      ctx.drawImage(image, this.x, this.y, this.width, this.height);
+      ctx.drawImage(image, this.x, this.y, this.scaleWidth, this.scaleHeight);
       this.imageCache = image;
     };
   }
