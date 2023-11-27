@@ -10,28 +10,17 @@ export class Line extends VerbalWidget {
 
   constructor(data: any) {
     super(data);
-    this.p1 = data.p1 ?? this.p1;
-    this.p2 = data.p2 ?? this.p2;
-    const strokeWidthHalf = this.style.strokeWidth
-      ? this.style.strokeWidth >> 1
-      : 1;
-    const { x, y, width, height } = calBoxSelectInfo(this.p1, this.p2);
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    if (width === 0) {
-      this.x = x - strokeWidthHalf;
-      this.width = strokeWidthHalf << 1;
-    }
-    if (height === 0) {
-      this.y = y - strokeWidthHalf;
-      this.height = strokeWidthHalf << 1;
-    }
+    this.x = data.x1 ?? 0;
+    this.y = data.y1 ?? 0;
+    this.width = data.x2 ?? 0 - this.x;
+    this.height = data.y2 ?? 0 - this.y;
   }
 
   protected updateCornerPoints(): void {
-    this.width;
+    const cornerWidth = 12;
+    const cornerHeight = 12;
+    const cornerWidthHalf = 6;
+    const cornerHeightHalf = 6;
   }
 
   isPointOnCorner(x: number, y: number): number {
