@@ -30,17 +30,17 @@ export class RoughCanvasRenderer implements Renderer {
         this.rc.rectangle(
           0,
           0,
-          widget.get("width"),
-          widget.get("height"),
+          widget.get("scaleWidth"),
+          widget.get("scaleHeight"),
           widget.get("style")
         );
         break;
       case "ellipse":
         this.rc.ellipse(
-          widget.get("width") >> 1,
-          widget.get("height") >> 1,
-          widget.get("width"),
-          widget.get("height"),
+          widget.get("scaleWidth") >> 1,
+          widget.get("scaleHeight") >> 1,
+          widget.get("scaleWidth"),
+          widget.get("scaleHeight"),
           widget.get("style")
         );
         break;

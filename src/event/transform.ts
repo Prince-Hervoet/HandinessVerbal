@@ -143,7 +143,7 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
   }
 }
 
-export function groupTransform(event: MouseEvent, ec: EventCenter) {
+export function groupTransformAction(event: MouseEvent, ec: EventCenter) {
   const transformDirIndex = ec.getActionRemark().transformDirIndex;
   const hitting = ec.getHitting()!;
   const { x, y, width, height, degree, scaleWidth, scaleHeight } =

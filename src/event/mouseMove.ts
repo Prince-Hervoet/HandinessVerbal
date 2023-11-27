@@ -6,7 +6,7 @@ import {
   removeBoxSelectFlag,
   removeHoveringFlag,
 } from "./placeFlag";
-import { groupTransform, utilTransformAction } from "./transform";
+import { groupTransformAction, utilTransformAction } from "./transform";
 
 export function mouseMoveHandler(event: MouseEvent, ec: EventCenter) {
   switch (ec.getState()) {
@@ -98,8 +98,9 @@ function mouseMoveCatching(event: MouseEvent, ec: EventCenter) {
 
 function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
   const hitting = ec.getHitting()!;
+  // utilTransformAction(event, ec);
   if (EventCenter.isGroup(hitting)) {
-    groupTransform(event, ec);
+    groupTransformAction(event, ec);
   } else {
     utilTransformAction(event, ec);
   }

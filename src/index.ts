@@ -65,7 +65,7 @@ for (let i = 0; i < 2; i++) {
   ans.push(rect);
 }
 
-canvas.place(...ans, ellTest);
+canvas.place(...ans);
 
 // canvas.place(rect);
 // console.log(rect.stringify());

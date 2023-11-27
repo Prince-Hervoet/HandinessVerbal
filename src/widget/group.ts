@@ -1,4 +1,5 @@
-import { degreeToRadian, rayMethod, rotatePoint } from "../util/math";
+import { Renderer } from "../core/renderer";
+import { rotatePoint } from "../util/math";
 import { VerbalWidget } from "./verbalWidget";
 
 /**
@@ -7,6 +8,7 @@ import { VerbalWidget } from "./verbalWidget";
 export class Group extends VerbalWidget {
   shapeType: string = "group";
   members: VerbalWidget[] = []; // 存放成员部件
+  records: any = [];
 
   constructor(data: any) {
     super(data);
@@ -24,65 +26,71 @@ export class Group extends VerbalWidget {
       });
       member.set("groupWidget", this);
       member.set("isEventActive", false);
+      this.records.push({
+        x: member.get("x"),
+        y: member.get("y"),
+        scaleWidth: member.get("scaleWidth"),
+        scaleHeight: member.get("scaleHeight"),
+      });
     });
   }
 
   recoverMembersInfo() {
     this.members.forEach((member: VerbalWidget) => {
-      const nScaleX = this.scaleX * member.get("scaleX");
-      const nScaleY = this.scaleY * member.get("scaleY");
-      const nDegree = this.degree + member.get("degree");
-      const nScaleWidth = member.get("width") * nScaleX;
-      const nScaleHeight = member.get("height") * nScaleY;
-      const mx = member.get("x");
-      const my = member.get("y");
-      const nBasePoint = {
+      member.set("groupWidget", null);
+      member.set("isEventActive", true);
+      const currentBasePoint = member.get("basePoint");
+      const groupBasePoint = {
         x: this.basePoint.x - this.x,
         y: this.basePoint.y - this.y,
       };
-      const oldMemberBasePoint = {
-        x: mx + (nScaleWidth >> 1),
-        y: my + (nScaleHeight >> 1),
-      };
-      const nMemberBasePoint = rotatePoint(
-        oldMemberBasePoint,
-        nBasePoint,
+      const nBasePoint = rotatePoint(
+        currentBasePoint,
+        groupBasePoint,
         this.degree
       );
-      const nx =
-        (nMemberBasePoint.x - (nScaleWidth >> 1)) * this.scaleX + this.x;
-      const ny =
-        (nMemberBasePoint.y - (nScaleHeight >> 1)) * this.scaleY + this.y;
-      member.set("groupWidget", null);
-      member.set("basePoint", {
-        x: nx + (nScaleWidth >> 1),
-        y: ny + (nScaleHeight >> 1),
-      });
-      member.set("isEventActive", true);
-      member.updateNoNotify({
-        x: nx,
-        y: ny,
-        scaleX: nScaleX,
-        scaleY: nScaleY,
-        degree: nDegree,
+      const nx = nBasePoint.x - (member.get("scaleWidth") >> 1);
+      const ny = nBasePoint.y - (member.get("scaleHeight") >> 1);
+      member.updateNoAmend({
+        x: nx + this.x,
+        y: ny + this.y,
+        scaleX: this.scaleX * member.get("scaleX"),
+        scaleY: this.scaleY * member.get("scaleY"),
+        degree: this.degree + member.get("degree"),
       });
     });
   }
 
-  setCtxGroupTransform(ctx: CanvasRenderingContext2D) {
+  render(renderer: Renderer): void {}
+
+  update(data: any) {
+    this.initData(data);
+    this.amendBasePoint(data);
+    this.calPointsInfo();
+    this.updateTransformer();
+    this.updateMembers();
+    this.emit("_update_watch_", {
+      target: this,
+      eventType: "_update_watch_",
+    });
+  }
+
+  updateMembers() {
+    const scaleX = this.scaleX;
+    const scaleY = this.scaleY;
+    this.members.forEach((member, index) => {
+      member.set("x", this.records[index].x * scaleX);
+      member.set("y", this.records[index].y * scaleY);
+      member.set("scaleWidth", this.records[index].scaleWidth * scaleX);
+      member.set("scaleHeight", this.records[index].scaleHeight * scaleY);
+      member.set("basePoint", {
+        x: member.get("x") + (member.get("scaleWidth") >> 1),
+        y: member.get("y") + (member.get("scaleHeight") >> 1),
+      });
+    });
+  }
+
+  setCtxGroupTransform = (ctx: CanvasRenderingContext2D) => {
     this.transform(ctx);
-  }
-
-  protected updatePathPoints(): void {
-    this.pathPoints = [
-      { x: this.x, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y + this.scaleHeight },
-      { x: this.x, y: this.y + this.scaleHeight },
-    ];
-  }
-
-  isPointOnWidget(x: number, y: number): boolean {
-    return rayMethod({ x, y }, this.pathPoints);
-  }
+  };
 }

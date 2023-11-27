@@ -1,3 +1,4 @@
+import { Group } from "../widget/group";
 import { VerbalWidget } from "../widget/verbalWidget";
 import { EventCenter, StateEnum } from "./eventCenter";
 import {
@@ -55,6 +56,11 @@ function mouseDownHitting(event: MouseEvent, ec: EventCenter) {
   const { offsetX, offsetY } = event;
   if (hovering) {
     if (hovering !== ec.getHitting()) {
+      const hitting = ec.getHitting()!;
+      if (EventCenter.isGroup(hitting)) {
+        (hitting as Group).recoverMembersInfo();
+        ec.getRenderCanvas().remove(hitting);
+      }
       removeHoveringFlag(ec);
       removeHittingFlag(ec);
       ec.setHitting(hovering);

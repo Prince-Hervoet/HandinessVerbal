@@ -18,9 +18,11 @@ export abstract class VerbalWidget implements ISimpleEvent {
   y: number = 0;
   width: number = 0;
   height: number = 0;
+  basePoint: Point = { x: 0, y: 0 };
+
+  // 缩放后的宽高
   scaleWidth: number = 0;
   scaleHeight: number = 0;
-  basePoint: Point = { x: 0, y: 0 };
 
   // 变换信息
   degree: number = 0;
@@ -204,17 +206,19 @@ export abstract class VerbalWidget implements ISimpleEvent {
   /**
    * 修正中心点，默认实现，无需子类替换
    */
-  protected amendBasePoint() {
-    const nPoint = rotatePoint(
-      {
-        x: this.x + (this.scaleWidth >> 1),
-        y: this.y + (this.scaleHeight >> 1),
-      },
-      this.basePoint,
-      this.degree
-    );
-    this.x = nPoint.x - (this.scaleWidth >> 1);
-    this.y = nPoint.y - (this.scaleHeight >> 1);
+  protected amendBasePoint(data: any) {
+    if (this.degree !== 0 && (data.scaleX || data.scaleY)) {
+      const nPoint = rotatePoint(
+        {
+          x: this.x + (this.scaleWidth >> 1),
+          y: this.y + (this.scaleHeight >> 1),
+        },
+        this.basePoint,
+        this.degree
+      );
+      this.x = nPoint.x - (this.scaleWidth >> 1);
+      this.y = nPoint.y - (this.scaleHeight >> 1);
+    }
   }
 
   /**
@@ -229,7 +233,7 @@ export abstract class VerbalWidget implements ISimpleEvent {
       ctx.translate(-this.basePoint.x, -this.basePoint.y);
     }
     ctx.translate(this.x, this.y);
-    ctx.scale(this.scaleX, this.scaleY);
+    // ctx.scale(this.scaleX, this.scaleY);
   }
 
   /**
@@ -271,6 +275,7 @@ export abstract class VerbalWidget implements ISimpleEvent {
    */
   update(data: any) {
     this.initData(data);
+    this.amendBasePoint(data);
     this.calPointsInfo();
     this.updateTransformer();
     this.emit("_update_watch_", {
@@ -299,7 +304,6 @@ export abstract class VerbalWidget implements ISimpleEvent {
    * 计算所需的点数组，一般无需子类替换
    */
   calPointsInfo() {
-    this.amendBasePoint();
     this.updateBoundingBoxPoints();
     this.updatePathPoints();
     this.updateCornerPoints();
@@ -373,7 +377,7 @@ export abstract class VerbalWidget implements ISimpleEvent {
     return rayMethod({ x, y }, this.boundingBoxPoints);
   }
 
-  setCoord() {}
+  setCoord(x: number, y: number) {}
 
   stringify() {
     return JSON.stringify({
