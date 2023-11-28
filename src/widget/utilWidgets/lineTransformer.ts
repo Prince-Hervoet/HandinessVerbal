@@ -17,14 +17,14 @@ export class LineTransformer extends VerbalWidget {
     ctx.globalAlpha = this.style.globalAlpha ?? 0.7;
     ctx.fillStyle = this.style.fill ?? "#3d84a8";
     ctx.fillRect(
-      this.p1.x - cornerWidthHalf,
-      this.p1.y - cornerHeightHalf,
+      -cornerWidthHalf,
+      -cornerHeightHalf,
       this.cornerWidth,
       this.cornerHeight
     );
     ctx.fillRect(
-      this.p2.x - cornerWidthHalf,
-      this.p2.y - cornerHeightHalf,
+      this.scaleWidth - cornerWidthHalf,
+      this.scaleHeight - cornerHeightHalf,
       this.cornerWidth,
       this.cornerHeight
     );

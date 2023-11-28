@@ -15,6 +15,7 @@ export class CanvasImage extends VerbalWidget {
   update(data: any) {
     const oldSrc = this.src;
     this.initData(data);
+    this.updateBasePoint();
     this.amendBasePoint(data);
     this.calPointsInfo();
     this.updateTransformer();

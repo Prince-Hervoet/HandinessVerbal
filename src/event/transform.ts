@@ -242,3 +242,17 @@ export function groupTransformAction(event: MouseEvent, ec: EventCenter) {
       break;
   }
 }
+
+export function lineTransformAction(event: MouseEvent, ec: EventCenter) {
+  const hitting = ec.getHitting()!;
+  const { offsetX, offsetY } = event;
+  const index = ec.getActionRemark().transformDirIndex;
+  switch (index) {
+    case 0:
+      hitting.update({ x1: offsetX, y1: offsetY });
+      break;
+    case 1:
+      hitting.update({ x2: offsetX, y2: offsetY });
+      break;
+  }
+}

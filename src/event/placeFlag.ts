@@ -3,8 +3,7 @@ import { EventCenter } from "./eventCenter";
 
 export function placeHoveringFlag(widget: VerbalWidget, ec: EventCenter) {
   const hoveringFlag = ec.getActionRemark().gHoveringFlag;
-  const { x, y, width, height, degree, scaleWidth, scaleHeight } =
-    widget.getBoundingBoxInfo();
+  const { x, y, degree, scaleWidth, scaleHeight } = widget.getBoundingBoxInfo();
   hoveringFlag.update({ x, y, width: scaleWidth, height: scaleHeight, degree });
   ec.getEventCanvas().place(hoveringFlag);
 }
@@ -15,16 +14,18 @@ export function removeHoveringFlag(ec: EventCenter) {
 }
 
 export function placeHittingFlag(widget: VerbalWidget, ec: EventCenter) {
-  const hittingFlag = ec.getActionRemark().gHittingFlag;
-  const { x, y, width, height, degree, scaleWidth, scaleHeight } =
-    widget.getBoundingBoxInfo();
+  let hittingFlag;
+  if (widget.get("shapeType") === "line")
+    hittingFlag = ec.getActionRemark().lingHittingFlag;
+  else hittingFlag = ec.getActionRemark().utilHittingFlag;
+  const { x, y, degree, scaleWidth, scaleHeight } = widget.getBoundingBoxInfo();
   hittingFlag.update({ x, y, width: scaleWidth, height: scaleHeight, degree });
   widget.set("transformer", hittingFlag);
   ec.getEventCanvas().place(hittingFlag);
 }
 
 export function removeHittingFlag(ec: EventCenter) {
-  const hittingFlag = ec.getActionRemark().gHittingFlag;
+  const hittingFlag = ec.getActionRemark().utilHittingFlag;
   const widget = ec.getHitting()!;
   widget.set("transformer", null);
   ec.getEventCanvas().remove(hittingFlag);

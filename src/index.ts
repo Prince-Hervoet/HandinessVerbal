@@ -5,6 +5,7 @@ import { UtilTransformer } from "./widget/utilWidgets/utilTransformer";
 import { HoveringFlag } from "./widget/utilWidgets/hoveringFlag";
 import { Triangle } from "./widget/triangle";
 import { Rhombus } from "./widget/rhombus";
+import { Line } from "./widget/line";
 
 const dom = document.getElementById("app")!;
 const canvas = initCanvas(dom, 4000, 2000, { "background-color": "#eee" });
@@ -71,6 +72,13 @@ const rhoTest = new Rhombus({
   style: { fill: "orange", seed: 4, fillStyle: "solid" },
 });
 
+const lineTest = new Line({
+  x1: 300,
+  y1: 300,
+  x2: 600,
+  y2: 300,
+});
+
 const ans = [];
 for (let i = 0; i < 2; i++) {
   const rect = canvas.rectangle({
@@ -83,7 +91,7 @@ for (let i = 0; i < 2; i++) {
   ans.push(rect);
 }
 
-canvas.place(...ans, imgTest, ellTest, triangle, rhoTest);
+canvas.place(...ans, imgTest, ellTest, triangle, rhoTest, lineTest);
 
 // canvas.place(rect);
 // console.log(rect.stringify());

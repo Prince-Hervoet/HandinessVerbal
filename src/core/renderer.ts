@@ -46,10 +46,10 @@ export class RoughCanvasRenderer implements Renderer {
         break;
       case "line":
         this.rc.line(
-          widget.get("p1").x,
-          widget.get("p1").y,
-          widget.get("p2").x,
-          widget.get("p2").y,
+          0,
+          0,
+          widget.get("width"),
+          widget.get("height"),
           widget.get("style")
         );
         break;

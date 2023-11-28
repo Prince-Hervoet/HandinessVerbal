@@ -5,4 +5,8 @@ export const GStyles = {
     strokeWidth: 3,
     fill: "#1976D2",
   },
+  hoveringFlagStyle: {
+    stroke: "#46cdcf",
+    strokeWidth: 3,
+  },
 };

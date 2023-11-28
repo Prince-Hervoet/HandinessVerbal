@@ -7,6 +7,7 @@ import { VerbalWidget } from "../widget/verbalWidget";
 import { mouseDownHandler } from "./mouseDown";
 import { mouseMoveHandler } from "./mouseMove";
 import { mouseUpHandler } from "./mouseUp";
+import { LineTransformer } from "../widget/utilWidgets/lineTransformer";
 
 type VerbalWidgetType = VerbalWidget | null;
 
@@ -46,7 +47,8 @@ class ActionRemark {
   transformDirIndex: number = -1;
 
   gHoveringFlag: VerbalWidget = new HoveringFlag({});
-  gHittingFlag: VerbalWidget = new UtilTransformer({});
+  utilHittingFlag: VerbalWidget = new UtilTransformer({});
+  lingHittingFlag: VerbalWidget = new LineTransformer({});
   gBoxSelectFlag: VerbalWidget = new BoxSelectRect({});
 }
 

@@ -6,7 +6,11 @@ import {
   removeBoxSelectFlag,
   removeHoveringFlag,
 } from "./placeFlag";
-import { groupTransformAction, utilTransformAction } from "./transform";
+import {
+  groupTransformAction,
+  lineTransformAction,
+  utilTransformAction,
+} from "./transform";
 
 export function mouseMoveHandler(event: MouseEvent, ec: EventCenter) {
   switch (ec.getState()) {
@@ -101,6 +105,8 @@ function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
   // utilTransformAction(event, ec);
   if (EventCenter.isGroup(hitting)) {
     groupTransformAction(event, ec);
+  } else if (hitting.get("shapeType") === "line") {
+    lineTransformAction(event, ec);
   } else {
     utilTransformAction(event, ec);
   }
