@@ -9,11 +9,15 @@ export class Group extends VerbalWidget {
   shapeType: string = "group";
   members: VerbalWidget[] = []; // 存放成员部件
   records: any = [];
+  originWidth: number = 0;
+  originHeight: number = 0;
 
   constructor(data: any) {
     super(data);
     this.members = data.members ?? [];
     this.updateMembersCoord();
+    this.originWidth = this.width;
+    this.originHeight = this.height;
   }
 
   private updateMembersCoord() {
@@ -21,16 +25,16 @@ export class Group extends VerbalWidget {
       member.set("x", member.get("x") - this.x);
       member.set("y", member.get("y") - this.y);
       member.set("basePoint", {
-        x: member.get("x") + (member.get("scaleWidth") >> 1),
-        y: member.get("y") + (member.get("scaleHeight") >> 1),
+        x: member.get("x") + (member.get("width") >> 1),
+        y: member.get("y") + (member.get("height") >> 1),
       });
       member.set("groupWidget", this);
       member.set("isEventActive", false);
       this.records.push({
         x: member.get("x"),
         y: member.get("y"),
-        scaleWidth: member.get("scaleWidth"),
-        scaleHeight: member.get("scaleHeight"),
+        width: member.get("width"),
+        height: member.get("height"),
       });
     });
   }
@@ -49,13 +53,11 @@ export class Group extends VerbalWidget {
         groupBasePoint,
         this.degree
       );
-      const nx = nBasePoint.x - (member.get("scaleWidth") >> 1);
-      const ny = nBasePoint.y - (member.get("scaleHeight") >> 1);
+      const nx = nBasePoint.x - (member.get("width") >> 1);
+      const ny = nBasePoint.y - (member.get("height") >> 1);
       member.updateNoAmend({
         x: nx + this.x,
         y: ny + this.y,
-        scaleX: this.scaleX * member.get("scaleX"),
-        scaleY: this.scaleY * member.get("scaleY"),
         degree: this.degree + member.get("degree"),
       });
     });
@@ -65,27 +67,27 @@ export class Group extends VerbalWidget {
 
   update(data: any) {
     this.initData(data);
+    const scaleX = this.width / this.originWidth;
+    const scaleY = this.height / this.originHeight;
     this.amendBasePoint(data);
     this.calPointsInfo();
     this.updateTransformer();
-    this.updateMembers();
+    this.updateMembers(scaleX, scaleY);
     this.emit("_update_watch_", {
       target: this,
       eventType: "_update_watch_",
     });
   }
 
-  updateMembers() {
-    const scaleX = this.scaleX;
-    const scaleY = this.scaleY;
+  updateMembers(scaleX: number, scaleY: number) {
     this.members.forEach((member, index) => {
       member.set("x", this.records[index].x * scaleX);
       member.set("y", this.records[index].y * scaleY);
-      member.set("scaleWidth", this.records[index].scaleWidth * scaleX);
-      member.set("scaleHeight", this.records[index].scaleHeight * scaleY);
+      member.set("width", this.records[index].width * scaleX);
+      member.set("height", this.records[index].height * scaleY);
       member.set("basePoint", {
-        x: member.get("x") + (member.get("scaleWidth") >> 1),
-        y: member.get("y") + (member.get("scaleHeight") >> 1),
+        x: member.get("x") + (member.get("width") >> 1),
+        y: member.get("y") + (member.get("height") >> 1),
       });
     });
   }

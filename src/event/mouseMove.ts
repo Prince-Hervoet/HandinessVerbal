@@ -102,9 +102,9 @@ function mouseMoveCatching(event: MouseEvent, ec: EventCenter) {
 
 function mouseMoveTransform(event: MouseEvent, ec: EventCenter) {
   const hitting = ec.getHitting()!;
-  // utilTransformAction(event, ec);
   if (EventCenter.isGroup(hitting)) {
     groupTransformAction(event, ec);
+    // utilTransformAction(event, ec);
   } else if (hitting.get("shapeType") === "line") {
     lineTransformAction(event, ec);
   } else {

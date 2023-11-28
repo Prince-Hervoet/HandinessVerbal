@@ -3,8 +3,8 @@ import { EventCenter } from "./eventCenter";
 
 export function placeHoveringFlag(widget: VerbalWidget, ec: EventCenter) {
   const hoveringFlag = ec.getActionRemark().gHoveringFlag;
-  const { x, y, degree, scaleWidth, scaleHeight } = widget.getBoundingBoxInfo();
-  hoveringFlag.update({ x, y, width: scaleWidth, height: scaleHeight, degree });
+  const { x, y, degree, width, height } = widget.getBoundingBoxInfo();
+  hoveringFlag.update({ x, y, width, height, degree });
   ec.getEventCanvas().place(hoveringFlag);
 }
 
@@ -18,8 +18,8 @@ export function placeHittingFlag(widget: VerbalWidget, ec: EventCenter) {
   if (widget.get("shapeType") === "line")
     hittingFlag = ec.getActionRemark().lingHittingFlag;
   else hittingFlag = ec.getActionRemark().utilHittingFlag;
-  const { x, y, degree, scaleWidth, scaleHeight } = widget.getBoundingBoxInfo();
-  hittingFlag.update({ x, y, width: scaleWidth, height: scaleHeight, degree });
+  const { x, y, width, height, degree } = widget.getBoundingBoxInfo();
+  hittingFlag.update({ x, y, width, height, degree });
   widget.set("transformer", hittingFlag);
   ec.getEventCanvas().place(hittingFlag);
 }

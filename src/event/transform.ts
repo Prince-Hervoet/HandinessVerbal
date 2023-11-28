@@ -28,8 +28,8 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
   switch (transformDirIndex) {
     case 0:
       // 左上角
-      nWidth = x - nx + scaleWidth;
-      nHeight = y - ny + scaleHeight;
+      nWidth = x - nx + width;
+      nHeight = y - ny + height;
       if (nWidth <= 1 || nHeight <= 1) {
         if (nWidth <= 1 && nHeight <= 1)
           ec.getActionRemark().transformDirIndex = 2;
@@ -37,18 +37,18 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
         else if (nHeight <= 1) ec.getActionRemark().transformDirIndex = 3;
         return;
       }
-      scaleX = getScaleNumber(width, nWidth);
-      scaleY = getScaleNumber(height, nHeight);
+      // scaleX = getScaleNumber(width, nWidth);
+      // scaleY = getScaleNumber(height, nHeight);
       hitting.update({
         x: nx,
         y: ny,
-        scaleX,
-        scaleY,
+        width: nWidth,
+        height: nHeight,
       });
       break;
     case 1:
       nWidth = nx - x;
-      nHeight = y - ny + scaleHeight;
+      nHeight = y - ny + height;
       if (nWidth <= 1 || nHeight <= 1) {
         if (nWidth <= 1 && nHeight <= 1)
           ec.getActionRemark().transformDirIndex = 3;
@@ -56,9 +56,9 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
         else if (nHeight <= 1) ec.getActionRemark().transformDirIndex = 2;
         return;
       }
-      scaleX = getScaleNumber(width, nWidth);
-      scaleY = getScaleNumber(height, nHeight);
-      hitting.update({ y: ny, scaleX, scaleY });
+      // scaleX = getScaleNumber(width, nWidth);
+      // scaleY = getScaleNumber(height, nHeight);
+      hitting.update({ y: ny, width: nWidth, height: nHeight });
       break;
     case 2:
       nWidth = nx - x;
@@ -70,12 +70,12 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
         else if (nHeight <= 1) ec.getActionRemark().transformDirIndex = 1;
         return;
       }
-      scaleX = getScaleNumber(width, nWidth);
-      scaleY = getScaleNumber(height, nHeight);
-      hitting.update({ scaleX, scaleY });
+      // scaleX = getScaleNumber(width, nWidth);
+      // scaleY = getScaleNumber(height, nHeight);
+      hitting.update({ width: nWidth, height: nHeight });
       break;
     case 3:
-      nWidth = x - nx + scaleWidth;
+      nWidth = x - nx + width;
       nHeight = ny - y;
       if (nWidth <= 1 || nHeight <= 1) {
         if (nWidth <= 1 && nHeight <= 1)
@@ -84,19 +84,19 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
         else if (nHeight <= 1) ec.getActionRemark().transformDirIndex = 0;
         return;
       }
-      scaleX = getScaleNumber(width, nWidth);
-      scaleY = getScaleNumber(height, nHeight);
-      hitting.update({ x: nx, scaleX, scaleY });
+      // scaleX = getScaleNumber(width, nWidth);
+      // scaleY = getScaleNumber(height, nHeight);
+      hitting.update({ x: nx, width: nWidth, height: nHeight });
       break;
     case 4:
       // 向上
-      nHeight = y - ny + scaleHeight;
+      nHeight = y - ny + height;
       if (nHeight <= 1) {
         ec.getActionRemark().transformDirIndex = 6;
         return;
       }
-      scaleY = getScaleNumber(height, nHeight);
-      hitting.update({ y: ny, scaleY });
+      // scaleY = getScaleNumber(height, nHeight);
+      hitting.update({ y: ny, height: nHeight });
       break;
     case 5:
       // 向右拖
@@ -105,8 +105,8 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
         ec.getActionRemark().transformDirIndex = 7;
         return;
       }
-      scaleX = getScaleNumber(width, nWidth);
-      hitting.update({ scaleX });
+      // scaleX = getScaleNumber(width, nWidth);
+      hitting.update({ width: nWidth });
       break;
     case 6:
       nHeight = ny - y;
@@ -114,18 +114,18 @@ export function utilTransformAction(event: MouseEvent, ec: EventCenter) {
         ec.getActionRemark().transformDirIndex = 4;
         return;
       }
-      scaleY = getScaleNumber(height, nHeight);
-      hitting.update({ scaleY });
+      // scaleY = getScaleNumber(height, nHeight);
+      hitting.update({ height: nHeight });
       break;
     case 7:
       // 向左
-      nWidth = x - nx + scaleWidth;
+      nWidth = x - nx + width;
       if (nWidth <= 1) {
         ec.getActionRemark().transformDirIndex = 5;
         return;
       }
-      scaleX = getScaleNumber(width, nWidth);
-      hitting.update({ x: nx, scaleX });
+      // scaleX = getScaleNumber(width, nWidth);
+      hitting.update({ x: nx, width: nWidth });
       break;
     case 8:
       // 旋转
@@ -164,8 +164,8 @@ export function groupTransformAction(event: MouseEvent, ec: EventCenter) {
   }
   switch (transformDirIndex) {
     case 0:
-      nWidth = x - nx + scaleWidth;
-      nHeight = y - ny + scaleHeight;
+      nWidth = x - nx + width;
+      nHeight = y - ny + height;
       if (nWidth <= 1 || nHeight <= 1) {
         if (nWidth <= 1 && nHeight <= 1)
           ec.getActionRemark().transformDirIndex = 2;
@@ -176,13 +176,18 @@ export function groupTransformAction(event: MouseEvent, ec: EventCenter) {
       scaleX = getScaleNumber(width, nWidth);
       scaleY = getScaleNumber(height, nHeight);
       factScale = Math.max(scaleX, scaleY);
-      nx = x + scaleWidth - factScale * width;
-      ny = y + scaleHeight - factScale * height;
-      hitting.update({ x: nx, y: ny, scaleX: factScale, scaleY: factScale });
+      nx = x + width - factScale * width;
+      ny = y + height - factScale * height;
+      hitting.update({
+        x: nx,
+        y: ny,
+        width: width * factScale,
+        height: height * factScale,
+      });
       break;
     case 1:
       nWidth = nx - x;
-      nHeight = y - ny + scaleHeight;
+      nHeight = y - ny + height;
       if (nWidth <= 1 || nHeight <= 1) {
         if (nWidth <= 1 && nHeight <= 1)
           ec.getActionRemark().transformDirIndex = 3;
@@ -193,8 +198,12 @@ export function groupTransformAction(event: MouseEvent, ec: EventCenter) {
       scaleX = getScaleNumber(width, nWidth);
       scaleY = getScaleNumber(height, nHeight);
       factScale = Math.max(scaleX, scaleY);
-      ny = y + scaleHeight - factScale * height;
-      hitting.update({ y: ny, scaleX: factScale, scaleY: factScale });
+      ny = y + height - factScale * height;
+      hitting.update({
+        y: ny,
+        width: width * factScale,
+        height: height * factScale,
+      });
       break;
     case 2:
       nWidth = nx - x;
@@ -209,7 +218,7 @@ export function groupTransformAction(event: MouseEvent, ec: EventCenter) {
       scaleX = getScaleNumber(width, nWidth);
       scaleY = getScaleNumber(height, nHeight);
       factScale = Math.max(scaleX, scaleY);
-      hitting.update({ scaleX: factScale, scaleY: factScale });
+      hitting.update({ width: width * factScale, height: height * factScale });
       break;
     case 3:
       nWidth = x - nx + scaleWidth;
@@ -225,7 +234,11 @@ export function groupTransformAction(event: MouseEvent, ec: EventCenter) {
       scaleY = getScaleNumber(height, nHeight);
       factScale = Math.max(scaleX, scaleY);
       nx = x + scaleWidth - factScale * width;
-      hitting.update({ x: nx, scaleX: factScale, scaleY: factScale });
+      hitting.update({
+        x: nx,
+        width: width * factScale,
+        height: height * factScale,
+      });
       break;
     case 8:
       // 旋转

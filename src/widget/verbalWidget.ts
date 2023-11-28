@@ -99,8 +99,8 @@ export abstract class VerbalWidget implements ISimpleEvent {
     this.transformer.update({
       x: this.x,
       y: this.y,
-      width: this.scaleWidth,
-      height: this.scaleHeight,
+      width: this.width,
+      height: this.height,
       degree: this.degree,
     });
   }
@@ -111,9 +111,9 @@ export abstract class VerbalWidget implements ISimpleEvent {
   protected updateBoundingBoxPoints() {
     this.boundingBoxPoints = [
       { x: this.x, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y },
-      { x: this.x + this.scaleWidth, y: this.y + this.scaleHeight },
-      { x: this.x, y: this.y + this.scaleHeight },
+      { x: this.x + this.width, y: this.y },
+      { x: this.x + this.width, y: this.y + this.height },
+      { x: this.x, y: this.y + this.height },
     ];
   }
 
@@ -128,10 +128,10 @@ export abstract class VerbalWidget implements ISimpleEvent {
     const cornerHeightHalf = cornerHeight >> 1;
     const nx = this.x - padding;
     const ny = this.y - padding;
-    const nWidth = this.scaleWidth + (padding << 1);
-    const nHeight = this.scaleHeight + (padding << 1);
-    const w = this.scaleWidth;
-    const h = this.scaleHeight;
+    const nWidth = this.width + (padding << 1);
+    const nHeight = this.height + (padding << 1);
+    const w = this.width;
+    const h = this.height;
     // 四个角
     const dirs = [
       [0, 0],
@@ -199,8 +199,8 @@ export abstract class VerbalWidget implements ISimpleEvent {
    * 默认实现，无需子类替换
    */
   protected updateBasePoint() {
-    this.basePoint.x = this.x + (this.scaleWidth >> 1);
-    this.basePoint.y = this.y + (this.scaleHeight >> 1);
+    this.basePoint.x = this.x + (this.width >> 1);
+    this.basePoint.y = this.y + (this.height >> 1);
   }
 
   /**
@@ -209,17 +209,17 @@ export abstract class VerbalWidget implements ISimpleEvent {
   protected amendBasePoint(data: any) {
     // 这里理论上可以优化
     // 这里的作用是：如果只是单纯的移动就不要修正，否则会出现中心点抖动
-    if (this.degree === 0 || (!data.scaleX && !data.scaleY)) return;
+    if (this.degree === 0 || (!data.width && !data.height)) return;
     const nPoint = rotatePoint(
       {
-        x: this.x + (this.scaleWidth >> 1),
-        y: this.y + (this.scaleHeight >> 1),
+        x: this.x + (this.width >> 1),
+        y: this.y + (this.height >> 1),
       },
       this.basePoint,
       this.degree
     );
-    this.x = nPoint.x - (this.scaleWidth >> 1);
-    this.y = nPoint.y - (this.scaleHeight >> 1);
+    this.x = nPoint.x - (this.width >> 1);
+    this.y = nPoint.y - (this.height >> 1);
   }
 
   /**
