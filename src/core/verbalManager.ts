@@ -1,7 +1,10 @@
 import { EventCenter } from "../event/eventCenter";
+import { CanvasImage } from "../widget/canvasImage";
+import { Ellipse } from "../widget/ellipse";
 import { Rectangle } from "../widget/rectangle";
 import { VerbalWidget } from "../widget/verbalWidget";
 import { VerbalCanvas } from "./verbalCanvas";
+import { Triangle } from "../widget/triangle";
 
 export class VerbalManager {
   private renderCanvas: VerbalCanvas;
@@ -53,5 +56,17 @@ export class VerbalManager {
 
   rectangle(data: any) {
     return new Rectangle(data);
+  }
+
+  canvasImage(data: any) {
+    return new CanvasImage(data);
+  }
+
+  ellipse(data: any) {
+    return new Ellipse(data);
+  }
+
+  triangle(data: any) {
+    return new Triangle(data);
   }
 }

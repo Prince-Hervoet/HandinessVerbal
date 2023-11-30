@@ -1,4 +1,5 @@
 import { Renderer } from "../../core/renderer";
+import { GStyles } from "../../util/gStyles";
 import { VerbalWidget } from "../verbalWidget";
 
 export class HoveringFlag extends VerbalWidget {
@@ -14,9 +15,10 @@ export class HoveringFlag extends VerbalWidget {
   }
 
   protected _render(renderer: Renderer): void {
+    const { stroke, strokeWidth } = GStyles.hoveringFlagStyle;
     const ctx = renderer.getCanvasCtx();
-    ctx.strokeStyle = this.style.stroke ?? "#46cdcf";
-    ctx.lineWidth = this.style.strokeWidth ?? 3;
+    ctx.strokeStyle = this.style.stroke ?? stroke;
+    ctx.lineWidth = this.style.strokeWidth ?? strokeWidth;
     ctx.strokeRect(
       -ctx.lineWidth,
       -ctx.lineWidth,

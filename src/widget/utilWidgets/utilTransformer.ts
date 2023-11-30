@@ -1,4 +1,5 @@
 import { Renderer } from "../../core/renderer";
+import { GStyles } from "../../util/gStyles";
 import { VerbalWidget } from "../verbalWidget";
 
 export class UtilTransformer extends VerbalWidget {
@@ -17,11 +18,12 @@ export class UtilTransformer extends VerbalWidget {
   }
 
   protected _render(renderer: Renderer): void {
+    const { stroke, globalAlpha, strokeWidth, fill } = GStyles.utilTransformer;
     const ctx = renderer.getCanvasCtx();
-    ctx.strokeStyle = this.style.stroke ?? "#009688";
-    ctx.globalAlpha = this.style.globalAlpha ?? 0.7;
-    ctx.lineWidth = this.style.strokeWidth ?? 3;
-    ctx.fillStyle = this.style.fill ?? "#1976D2";
+    ctx.strokeStyle = this.style.stroke ?? stroke;
+    ctx.globalAlpha = this.style.globalAlpha ?? globalAlpha;
+    ctx.lineWidth = this.style.strokeWidth ?? strokeWidth;
+    ctx.fillStyle = this.style.fill ?? fill;
     const nx = -this.padding;
     const ny = -this.padding;
     const nWidth = this.width + (this.padding << 1);
