@@ -9,6 +9,7 @@ import { mouseMoveHandler } from "./mouseMove";
 import { mouseUpHandler } from "./mouseUp";
 import { LineTransformer } from "../widget/utilWidgets/lineTransformer";
 import { removeHittingFlag, removeHoveringFlag } from "./placeFlag";
+import { GroupTransformer } from "../widget/utilWidgets/groupTransformer";
 
 type VerbalWidgetType = VerbalWidget | null;
 
@@ -48,25 +49,29 @@ class ActionRemark {
   transformDirIndex: number = -1;
 
   gHoveringFlag: VerbalWidget = new HoveringFlag({});
-  utilHittingFlag: VerbalWidget = new UtilTransformer({});
-  lingHittingFlag: VerbalWidget = new LineTransformer({});
+  gUtilHittingFlag: VerbalWidget = new UtilTransformer({});
+  gLingHittingFlag: VerbalWidget = new LineTransformer({});
+  gGroupHittingFlag: VerbalWidget = new GroupTransformer({});
   gBoxSelectFlag: VerbalWidget = new BoxSelectRect({});
 }
 
+/**
+ * 行为配置类
+ */
 class ActionConfig {
   isBoxSelect: boolean = true;
 }
 
 export class EventCenter {
-  private targetDom: HTMLElement;
-  private renderCanvas: VerbalCanvas;
-  private eventCanvas: VerbalCanvas;
-  private hovering: VerbalWidgetType = null;
-  private hitting: VerbalWidgetType = null;
+  private targetDom: HTMLElement; // 事件绑定的目标DOM
+  private renderCanvas: VerbalCanvas; // 渲染层
+  private eventCanvas: VerbalCanvas; // 事件层
+  private hovering: VerbalWidgetType = null; // 当前悬停的部件
+  private hitting: VerbalWidgetType = null; // 当前选中的部件
   private actionRemark: ActionRemark;
   private actionConfig: ActionConfig;
-  private state: number = StateEnum.COMMON;
-  private isPendingUpdate: boolean = false;
+  private state: number = StateEnum.COMMON; // 当前画布事件状态
+  private isPendingUpdate: boolean = false; // 当前渲染延迟标记
 
   constructor(
     targetDOM: HTMLElement,
@@ -81,6 +86,12 @@ export class EventCenter {
     this.bindEventHandler();
   }
 
+  /**
+   * 对部件绑定更新通知函数
+   * @param widget
+   * @param ec
+   * @returns
+   */
   static bindUpdateWatchEvent(widget: VerbalWidget, ec: EventCenter) {
     if (!widget) return;
     widget.delete("_update_watch_");
