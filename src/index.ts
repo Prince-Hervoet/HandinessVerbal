@@ -79,7 +79,7 @@ const lineTest = new Line({
   y2: 300,
 });
 
-const ans = [];
+const ans: any[] = [];
 for (let i = 0; i < 2; i++) {
   const rect = canvas.rectangle({
     x: 100,
@@ -92,6 +92,11 @@ for (let i = 0; i < 2; i++) {
 }
 
 canvas.place(...ans, imgTest, ellTest, triangle, rhoTest, lineTest);
+setTimeout(() => {
+  canvas.remove(...ans);
+
+  console.log(canvas.size());
+}, 2000);
 
 // canvas.place(rect);
 // console.log(rect.stringify());

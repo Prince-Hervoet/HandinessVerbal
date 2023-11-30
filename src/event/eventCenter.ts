@@ -8,6 +8,7 @@ import { mouseDownHandler } from "./mouseDown";
 import { mouseMoveHandler } from "./mouseMove";
 import { mouseUpHandler } from "./mouseUp";
 import { LineTransformer } from "../widget/utilWidgets/lineTransformer";
+import { removeHittingFlag, removeHoveringFlag } from "./placeFlag";
 
 type VerbalWidgetType = VerbalWidget | null;
 
@@ -167,5 +168,21 @@ export class EventCenter {
     this.renderCanvas.setIsRender(true, ...widgets);
     this.renderCanvas.renderAll();
     this.eventCanvas.remove(...widgets);
+  }
+
+  remove(...widgets: VerbalWidget[]) {
+    this.renderCanvas.remove(...widgets);
+    this.eventCanvas.remove(...widgets);
+    for (const widget of widgets) {
+      if (widget === this.hovering) {
+        removeHoveringFlag(this);
+        this.hovering = null;
+      }
+      if (widget === this.hitting) {
+        removeHittingFlag(this);
+        this.hitting = null;
+        this.state = StateEnum.COMMON;
+      }
+    }
   }
 }

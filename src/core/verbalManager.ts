@@ -30,12 +30,15 @@ export class VerbalManager {
   }
 
   add(...widgets: VerbalWidget[]) {
+    for (const widget of widgets) {
+      if (!widget) continue;
+      EventCenter.bindUpdateWatchEvent(widget, this.eventCenter);
+    }
     this.renderCanvas.add(...widgets);
   }
 
   remove(...widgets: VerbalWidget[]) {
-    this.renderCanvas.remove(...widgets);
-    this.eventCanvas.remove(...widgets);
+    this.eventCenter.remove(...widgets);
   }
 
   size() {
